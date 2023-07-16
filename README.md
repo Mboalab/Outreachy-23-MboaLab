@@ -48,7 +48,8 @@ To this end, the main missions of Mboalab are as follows:
 <img width="271" alt="image" src="https://github.com/Nikhila-KS/Outreachy-23-MboaLab/assets/100426366/f74dff8e-d7ab-4feb-b7a8-62cdb0efbb66">
 </div>
 Mboathoscope is an open-source digital stethoscope AI app that allows users to record, visualize and analyze the heart. It uses machine learning algorithms to provide insights into the audio data and aid in the diagnosis of cardiovascular and respiratory diseases. It is a Project created and maintained by the Mboalab Community originating and based in Cameroon. During training; recorded heartsounds where used but during testing bluetooth sound via a smartphone can be used. In the future, we would love to further advance the app by including Lung sound trained model and disease detection with lung sound.
-<b></b>Outreachy MboaLab May-August 2023 Interns - Nikhila K S and Sumaya Ahmed Salihs </b>
+<br> <br>
+<b>Outreachy MboaLab May-August 2023 Interns - Nikhila K S and Sumaya Ahmed Salihs </b>
 
 ## Our Aim
 * Our initial aim is to create our machine learning model that trains and tests heart sounds.
