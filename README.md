@@ -51,7 +51,7 @@ Mboathoscope is an open-source digital stethoscope AI app that allows users to r
 <b></b>Outreachy MboaLab May-August 2023 Interns - Nikhila K S and Sumaya Ahmed Salihs </b>
 
 ## Our Aim
-* Our initial aim is to create our machine-learning model that trains and tests heart-sounds.
+* Our initial aim is to create our machine learning model that trains and tests heart sounds.
 * After completion of the training part our next goal is to create a tflite format and plugin our model into our Mboathoscope app.
 * We will then restructure our app by following the MVC architecture.
 * Improve the UI/UX of our app by leveraging animations.
