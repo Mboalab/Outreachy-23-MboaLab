@@ -1,20 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mboathoscope/controller/recordingsProvider.dart';
 import 'package:mboathoscope/views/widgets/waveform.dart';
 
-class RecordingList extends StatelessWidget {
+class RecordingList extends ConsumerWidget {
   //final List<ListItem> items;
 
   const RecordingList({super.key});
 
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context,WidgetRef ref) {
+
+    final listOfRecordings = ref.read(RecordingListProvider);
+
     return SizedBox(
       height: 230,
       child: ListView.builder(
         shrinkWrap: true,
+        itemCount: listOfRecordings.length,
         itemBuilder: (context, index) {
           //final item = items[index];
           return ListTile(
+
             title: Row(
               children: <Widget>[
                 const Expanded(
@@ -28,20 +36,29 @@ class RecordingList extends StatelessWidget {
                       null;
                       //to do task
                     },
-                    child: const Icon(
-                      Icons.edit_outlined,
+                    child: IconButton(
+                      icon: const Icon(Icons.edit_outlined),
+                      onPressed: () {
+                        ref.read(RecordingListProvider.notifier).updateRecordingName(listOfRecordings[index].id, 'New Name');    
+                      } ,
                       color: Colors.black,
 
                     ),
                   ),
                 ),
-                const Expanded(
+
+                Expanded(
                   flex: 10,
-                  child: Icon(
-                    Icons.delete_sweep_outlined,
+                  child: IconButton(
+                    icon:const Icon(Icons.delete_sweep_outlined),
+                    onPressed: (){
+                      ref.read(RecordingListProvider.notifier).deleteRecording(listOfRecordings[index].id);
+                    },
                     color: Colors.black,
                   ),
                 ),
+
+
                 const Expanded(
                   flex: 10,
                   child: Icon(
@@ -49,6 +66,7 @@ class RecordingList extends StatelessWidget {
                     color: Colors.black,
                   ),
                 ),
+
                 Expanded(
                   flex: 6,
                   child: Stack(
@@ -71,6 +89,7 @@ class RecordingList extends StatelessWidget {
                   ),
                 ),
               ],
+              
             ),
             subtitle: const Text("Recording 1"),
           );
