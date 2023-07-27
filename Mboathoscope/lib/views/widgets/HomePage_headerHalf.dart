@@ -1,9 +1,148 @@
+import 'dart:io';
+import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:flutter/material.dart';
-import 'package:mboathoscope/views/buttons/SaveButton.dart';
+import 'package:mboathoscope/controller/appDirectorySingleton.dart';
+import 'package:mboathoscope/controller/helpers.dart';
+import 'package:mboathoscope/views/widgets/alert_dialog_model.dart';
+import 'package:provider/provider.dart';
 
 
-class headerHalf extends StatelessWidget {
+
+
+
+
+class headerHalf extends StatefulWidget {
   const headerHalf({Key? key}) : super(key: key);
+
+  @override
+  State<headerHalf> createState() => _headerHalfState();
+}
+
+class _headerHalfState extends State<headerHalf> {
+
+  late final RecorderController recorderController;
+  bool isRecordingCompleted = false; ///for time to determine whether to save or delete
+  bool isRecording = false; ///for time to determine whether to show microphone or not
+  late String path;
+  static Directory appDirectory = AppDirectorySingleton().appDirectory;
+  AppDirectorySingleton appDirectorySingleton = AppDirectorySingleton();
+  String heartBeatFileFolderPath = AppDirectorySingleton.heartBeatParentPath;
+
+
+  @override
+  void initState() {
+    _initialiseController();
+    super.initState();
+  }
+
+
+
+
+
+
+
+  ///Initializes Recorder
+  void _initialiseController() {
+    recorderController = RecorderController()
+      ..androidEncoder = AndroidEncoder.aac
+      ..androidOutputFormat = AndroidOutputFormat.mpeg4
+      ..iosEncoder = IosEncoder.kAudioFormatMPEG4AAC
+      ..sampleRate = 16000;
+  }
+
+
+  ///
+  Widget recordBody(){
+
+    if(isRecording){ ///recorderController.isRecording: could have used this but issuing stoprecorder doesn't change it state, will investigate why it doesn't refresh
+      return InkWell(
+        onTap: (){
+          ///For Start or Stop Recording
+          _startOrStopRecording();
+        },
+        child: SafeArea(
+          child: AnimatedSwitcher(
+              duration: const Duration(milliseconds: 200),
+              child: AudioWaveforms(
+                enableGesture: false,
+                size: Size(MediaQuery.of(context).size.width / 2, 50),
+                recorderController: recorderController,
+                waveStyle: const WaveStyle(waveColor: Colors.white, extendWaveform: true, showMiddleLine: false,
+                    durationStyle: TextStyle(color: Colors.black), showDurationLabel: true,
+                    durationLinesColor: Colors.transparent),
+                decoration: BoxDecoration(borderRadius: BorderRadius.circular(12.0), color: helpers.appBlueColor,),
+                padding: const EdgeInsets.only(left: 18),
+                margin: const EdgeInsets.symmetric(horizontal: 15),
+              )
+
+          ),
+        ),
+      );
+    }else{
+
+      ///Applies when recording is completed and saved or start of the page
+      return IconButton(
+        icon: const Icon(Icons.mic),
+        iconSize: 100,
+        color:  helpers.appBlueColor,
+        onPressed: (){
+          ///Start or Stop Recording
+          _startOrStopRecording();
+        },
+      );
+
+    }
+
+  }
+
+
+  ///Starts and Stops Recorder
+  _startOrStopRecording() async {
+    ///
+    helpers().checkForMicrophonePermission(recorderController);
+
+    try{
+      if(recorderController.isRecording){
+
+        recorderController.reset();
+
+        ///Stops recording and returns path,
+        ///saves file automatically here
+        recorderController.stop(false).then((value)async{
+
+          DialogUtils.showCustomDialog(context, title: 'title', path: path);
+
+        });
+
+        ///Remove because rename and delete functions have a bug
+        ///This allows UI to switch to allow user to either save or delete, also allow for rename
+        setState(() {
+          isRecording = !isRecording;
+          // isRecordingCompleted = true;
+        });
+
+      }else{
+
+        ///States paths for recording to be saved
+        path = "${appDirectory.path}/$heartBeatFileFolderPath${DateTime.now().millisecondsSinceEpoch}.mpeg4";
+
+        await recorderController.record(path: path);
+
+        /// refresh state for changes on page to reflect
+        setState(() {
+          isRecording = !isRecording;
+        });
+
+      }
+
+    }catch(error){
+
+      debugPrint(error.toString());
+
+    }finally {
+
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -73,7 +212,7 @@ class headerHalf extends StatelessWidget {
           child: Row(
             children: <Widget>[
               Expanded(
-                flex: 4,
+                flex: 1,
                 //padding: const EdgeInsets.only(left: 2.0, right: 2.0),
                 child: Stack(
                   children:[
@@ -93,8 +232,8 @@ class headerHalf extends StatelessWidget {
                           children: [
                             Image.asset(
                               'assets/images/img_heart.png',
-                              height: 25,
-                              width: 25,
+                              height: 20,
+                              width: 20,
                             ),
                             const Text(
                               'heart',
@@ -109,28 +248,32 @@ class headerHalf extends StatelessWidget {
                   ],
                 ),
               ),
-              Expanded(
-                flex: 6,
-                child: Image.asset(
-                  'assets/images/img_record.png',
-                  height: 150,
-                  width: 150,
-                ),
-              ),
+
               Expanded(
                 flex: 3,
                 child: Padding(
-                  padding: const EdgeInsets.only(left: 17.0, right: 17.0),
-                  child: SaveButton(
-                    txt: 'Save',
-                    onPress: (){
-                      null;
-                    },
+                  padding: const EdgeInsets.only(
+                    right: 8.0,
+                    left: 8.0,
+                    top: 20.0,
+                    bottom: 20.0,
                   ),
+                  child: recordBody(),
                 ),
-              ),
+              )
+
             ],
           ),
+        ),
+
+        const SizedBox(
+          height: 12,
+        ),
+
+        Consumer<AppDirectorySingleton>(
+          builder: (context, appDirSingleton, child) {
+            return Text('Total count: ${appDirSingleton.heartbeatAndPathMap.entries.length}');
+          },
         ),
 
         const Text(
@@ -172,3 +315,6 @@ class headerHalf extends StatelessWidget {
     );
   }
 }
+
+
+
