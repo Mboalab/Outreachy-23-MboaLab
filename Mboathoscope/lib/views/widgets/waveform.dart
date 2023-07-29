@@ -1,26 +1,29 @@
-
-
 import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:flutter/material.dart';
 
-
-
 class WaveformButton extends StatefulWidget {
   final PlayerController playerController;
-  const WaveformButton({Key? key, required this.playerController}) : super(key: key);
+  final String fileName;
+  const WaveformButton({Key? key, required this.playerController,required this.fileName})
+      : super(key: key);
 
   @override
   State<WaveformButton> createState() => _WaveformButtonState();
 }
 
-
 class _WaveformButtonState extends State<WaveformButton> {
-  late final PlayerController playerController; ///Recording Player
-  late bool isPlaying; ///state of recording player
-  late Duration duration; ///Duration of recording
-  static int millisecondsInAnHour = 3600000; ///Equivalence of milliseconds in an hour
+  late final PlayerController playerController;
 
+  ///Recording Player
+  late bool isPlaying;
 
+  ///state of recording player
+  late Duration duration;
+
+  ///Duration of recording
+  static int millisecondsInAnHour = 3600000;
+
+  ///Equivalence of milliseconds in an hour
 
   @override
   void initState() {
@@ -52,14 +55,12 @@ class _WaveformButtonState extends State<WaveformButton> {
     });
   }
 
-
-
-
   @override
   void dispose() {
     super.dispose();
+
     ///Removes all listeners associated to a player
-    playerController.removeListener((){});
+    playerController.removeListener(() {});
 
     ///Stop players since it will no longer be played
     playerController.stopPlayer();
@@ -73,17 +74,27 @@ class _WaveformButtonState extends State<WaveformButton> {
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.start,
       children: [
         Container(
-          margin: const EdgeInsets.all(5.0),
-          padding: const EdgeInsets.all(3.0),
+          margin: const EdgeInsets.fromLTRB(0, 0, 0, 7),
+          padding: const EdgeInsets.all(2.0),
+
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(40.0),
-            color: const Color(0xffF3F7FF),
+            borderRadius: BorderRadius.circular(15),
             border: Border.all(color: Colors.black),
+            color: const Color(0x5ebcc9e5),
           ),
+
+          // decoration: BoxDecoration(
+          //   borderRadius: BorderRadius.circular(20.0),
+          //   color: const Color(0xffF3F7FF),
+          //   border: Border.all(color: Colors.black),
+          // ),
+
           child: Row(
             children: <Widget>[
+
               Expanded(
                 flex: 1,
                 child: Padding(
@@ -93,37 +104,40 @@ class _WaveformButtonState extends State<WaveformButton> {
                     backgroundColor: Colors.black,
                     child: IconButton(
                       color: Colors.white,
-                      iconSize: 15,
-                      icon: isPlaying ? Icon(Icons.pause, color:  Colors.blue):
-                      Icon(Icons.play_arrow, color:  Colors.blue,),
+                      iconSize: 16,
+                      icon: isPlaying
+                          ? const Icon(Icons.pause,
+                              color: Color.fromARGB(255, 154, 202, 241))
+                          : const Icon(
+                              Icons.play_arrow,
+                              color: Color.fromARGB(255, 154, 202, 241),
+                            ),
                       onPressed: () {
-
-                        try{
-
-                          if(isPlaying){
+                        try {
+                          if (isPlaying) {
                             ///pause player without freeing resources hence allow replay/continue
                             playerController.pausePlayer();
-
-                          }else{
+                          } else {
                             ///FinishMode.pause: Allows audio to replayed several times starting from 0 second
-                            playerController.startPlayer(finishMode: FinishMode.pause);
+                            playerController.startPlayer(
+                                finishMode: FinishMode.pause);
                           }
 
                           ///Toggls between playing and not playing
                           setState(() {
                             isPlaying = !isPlaying;
                           });
-
-                        }catch(e){
+                        } catch (e) {
                           ///Print error message in a safe and production friendly way
                           debugPrint(e.toString());
                         }
-
                       },
                     ),
                   ),
                 ),
               ),
+              const SizedBox(width: 2.0,),
+
               Expanded(
                 flex: 5,
                 child: AudioFileWaveforms(
@@ -139,24 +153,103 @@ class _WaveformButtonState extends State<WaveformButton> {
                   ),
                 ),
               ),
+              const SizedBox(width: 2.0,),
+              //------
+               Expanded(
+                  flex: 1,
+                 child: Padding(
+                    padding: const EdgeInsets.only(right: 0.0),
+                    child: Container(
+                      child: GestureDetector(
+                        onTap: (){},
+                        child: const Icon(
+                          Icons.edit_outlined,
+                          color: Colors.black,
+               
+                        ),
+                      ),
+                    ),
+                  ),
+               ),
+                
+                Expanded(
+                  flex: 1,
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 0.0),
+                    child: Container(
+                      child: GestureDetector(
+                        onTap: () {},
+                        child: const Icon(
+                          Icons.delete_sweep_outlined,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              
+                Expanded(
+                  flex: 1,
+                  child: Padding(
+                    padding: const EdgeInsets.only(right:1,),
+                    child: Container(
+                      child: GestureDetector(
+                        onTap: () {
+                
+                        },
+                        child: const Icon(
+                          Icons.share,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
 
+              //-----------
             ],
           ),
         ),
 
         Padding(
           padding: const EdgeInsets.only(left: 9.0, bottom: 2),
-          child: duration.inMilliseconds>=millisecondsInAnHour?
-          ///Display format for when player is at least an hour of duration
-          Text(duration.toHHMMSS(), style: const TextStyle(color: Colors.black, fontSize: 9),):
+          child: duration.inMilliseconds >= millisecondsInAnHour
+              ?
 
-          ///Display format for when player is less than  an hour
-          Text(duration.toHHMMSS().substring(3, 8), style: const TextStyle(color: Colors.black, fontSize: 10),),
+              ///Display format for when player is at least an hour of duration
+              Row(
+                children: [
+                  Text(
+                      duration.toHHMMSS(),
+                      style: const TextStyle(color: Colors.black, fontSize: 14),
+                    ),
+                  const SizedBox(width: 40),
+                    Text(
+                      widget.fileName,
+                      style: const TextStyle(color: Color.fromARGB(255, 0, 0, 0), fontSize: 14),
+                      ),
+                ],
+              )
+              :
+
+              ///Display format for when player is less than  an hour
+              Row(
+                children: [
+                  Text(
+                      duration.toHHMMSS().substring(3, 8),
+                      style: const TextStyle(color: Colors.grey, fontSize: 14),
+                    ),
+                    const SizedBox(width: 40),
+                    Text(
+                      widget.fileName,
+                      style: const TextStyle(color: Colors.grey, fontSize: 14),
+                      ),
+                ],
+              ),
         )
       ],
     );
   }
 }
 
-class Helpers {
-}
+class Helpers {}

@@ -42,6 +42,7 @@ dependencies:
   permission_handler: ^10.4.3
   fluttertoast: ^8.2.1
   provider: ^6.0.5
+  simple_ripple_animation: ^0.0.3
 
 
 

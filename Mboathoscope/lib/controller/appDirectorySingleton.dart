@@ -1,14 +1,12 @@
-
-
-
-
 import 'dart:io';
 import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:flutter/material.dart';
 import 'package:mboathoscope/controller/helpers.dart';
 
 
+
 class AppDirectorySingleton with ChangeNotifier{
+
   static final AppDirectorySingleton _singleton = AppDirectorySingleton._internal();
   late Directory appDirectory; ///Directory for saving recordings
   static String heartBeatParentPath = 'heartsound'; ///Direct Directory name for where recordings are saved
