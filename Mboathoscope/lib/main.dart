@@ -1,39 +1,40 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mboathoscope/views/HomePage.dart';
+import 'package:mboathoscope/controller/appDirectorySingleton.dart';
 import 'package:mboathoscope/views/RolePage.dart';
 import 'package:mboathoscope/views/StartPage.dart';
+import 'package:mboathoscope/views/homePage.dart';
+import 'package:provider/provider.dart' as provider;
 
 
-void main() {
+
+
+
+void main() async{
+
+  ///
+  WidgetsFlutterBinding.ensureInitialized();
+  await AppDirectorySingleton().getAppDirectory();
+  await AppDirectorySingleton().fetchRecordings();
 
   runApp(
-   const ProviderScope(child: MyApp()),
+      provider.MultiProvider(
+        providers: [
+          provider.ChangeNotifierProvider<AppDirectorySingleton>(create: (_) => AppDirectorySingleton()),
+        ],
+        child: MaterialApp(
+          theme: ThemeData(
+            primarySwatch: Colors.blue,
+          ),
+          home: const StartPage(),
+          debugShowCheckedModeBanner: false,
+          initialRoute: '/',
+          routes: {
+            '': (context) => const StartPage(),
+            '/rolepage': (context) => const RolePage(),
+            '/homepage': (context) => const HomePage(),
+          },
+        ),
+      )
   );
-
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-
-    return  MaterialApp(
-      // title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue
-      ),
-      home: const StartPage(),
-      debugShowCheckedModeBanner: false,
-      initialRoute: '/',
-      routes: {
-        '': (context) => const StartPage(),
-        '/rolepage': (context) => const RolePage(),
-        '/homepage': (context) => const HomePage(),
-      },
-    );
-    
-  }
 }
 

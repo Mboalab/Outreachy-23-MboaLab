@@ -27,7 +27,7 @@ class RecordingList extends ConsumerWidget {
               children: <Widget>[
                 const Expanded(
                   flex: 70,
-                  child: WaveformButton(),
+                  child: Text('')//WaveformButton(),
                 ),
                 Expanded(
                   flex: 10,

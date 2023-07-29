@@ -38,6 +38,12 @@ dependencies:
   riverpod: ^2.3.6
   flutter_riverpod: ^2.3.6
   intl: ^0.18.1
+  path_provider: ^2.0.13
+  permission_handler: ^10.4.3
+  fluttertoast: ^8.2.1
+  provider: ^6.0.5
+
+
 
 dev_dependencies:
   flutter_test:
