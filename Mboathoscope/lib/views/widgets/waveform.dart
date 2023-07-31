@@ -12,7 +12,6 @@ class WaveformButton extends StatefulWidget {
 }
 
 class _WaveformButtonState extends State<WaveformButton> {
-  late final PlayerController playerController;
 
   ///Recording Player
   late bool isPlaying;
@@ -32,26 +31,27 @@ class _WaveformButtonState extends State<WaveformButton> {
     ///Sets recording's player state to not playing upon page initialization
     isPlaying = false;
 
-    ///sets the locally declared player to the pass player from the recordings Class
-    playerController = widget.playerController;
-
     ///Initializes the duration of the player's maximum duration
-    duration = Duration(milliseconds: playerController.maxDuration);
+    duration = Duration(milliseconds: widget.playerController.maxDuration);
 
     ///Used to listen and update duration during the cause of playing
-    playerController.onCurrentDurationChanged.listen((event) {
-      setState(() {
-        duration = Duration(milliseconds: event);
-      });
+    widget.playerController.onCurrentDurationChanged.listen((event) {
+      if(mounted){
+        setState(() {
+          duration = Duration(milliseconds: event);
+        });
+      }
     });
 
     ///Gets player completion event and use to trigger player to
     ///pause when entire audio has been listened
-    playerController.onCompletion.listen((event) {
-      setState(() {
-        ///Set playing to not playing since player has reached its end
-        isPlaying = !isPlaying;
-      });
+    widget.playerController.onCompletion.listen((event) {
+      if(mounted){
+        setState(() {
+          ///Set playing to not playing since player has reached its end
+          isPlaying = !isPlaying;
+        });
+      }
     });
   }
 
@@ -60,13 +60,20 @@ class _WaveformButtonState extends State<WaveformButton> {
     super.dispose();
 
     ///Removes all listeners associated to a player
-    playerController.removeListener(() {});
+    ///Suspected it is the cause of the bug of audio data
+    ///being unable to replayed after several plays, so
+    ///commented it out for several re-testing
+    // widget.playerController.removeListener(() {});
 
     ///Stop players since it will no longer be played
-    playerController.stopPlayer();
+    ///Commented it out for several restesting to see
+    ///if is the cause of re-play failing after several plays
+    // widget.playerController.stopPlayer();
 
     ///Causes an error/audio leaks so removed,
     ///will investigate later on what causes this
+    ///Took it out to retest if it is the cause of re-play failure
+    ///after several plays of audio files
     // playerController.dispose();
   }
 
@@ -116,10 +123,10 @@ class _WaveformButtonState extends State<WaveformButton> {
                         try {
                           if (isPlaying) {
                             ///pause player without freeing resources hence allow replay/continue
-                            playerController.pausePlayer();
+                            widget.playerController.pausePlayer();
                           } else {
                             ///FinishMode.pause: Allows audio to replayed several times starting from 0 second
-                            playerController.startPlayer(
+                            widget.playerController.startPlayer(
                                 finishMode: FinishMode.pause);
                           }
 
@@ -142,10 +149,10 @@ class _WaveformButtonState extends State<WaveformButton> {
                 flex: 5,
                 child: AudioFileWaveforms(
                   size: Size(MediaQuery.of(context).size.width, 40.0),
-                  playerController: playerController,
+                  playerController: widget.playerController,
                   enableSeekGesture: true,
                   waveformType: WaveformType.long,
-                  waveformData: playerController.waveformData,
+                  waveformData: widget.playerController.waveformData,
                   playerWaveStyle: const PlayerWaveStyle(
                     fixedWaveColor: Colors.white54,
                     liveWaveColor: Colors.blueAccent,

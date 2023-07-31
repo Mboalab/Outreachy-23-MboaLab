@@ -43,6 +43,7 @@ dependencies:
   fluttertoast: ^8.2.1
   provider: ^6.0.5
   simple_ripple_animation: ^0.0.3
+  path: ^1.8.3
 
 
 
