@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:mboathoscope/controller/appDirectorySingleton.dart';
 import 'package:path/path.dart' as p;
 
-
 class DialogUtils {
   static final DialogUtils _instance = DialogUtils.internal();
 
@@ -12,16 +11,16 @@ class DialogUtils {
 
   factory DialogUtils() => _instance;
   static Directory appDirectory = AppDirectorySingleton().appDirectory;
-  static String heartBeatFileFolderPath = AppDirectorySingleton.heartBeatParentPath;
+  static String heartBeatFileFolderPath =
+      AppDirectorySingleton.heartBeatParentPath;
 
-  static void showCustomDialog(BuildContext context,
-      {
-        required String title,
-        String deleteBtnText = "Delete",
-        String saveBtnText = "Save",
-        required String path,
-      }) {
-
+  static void showCustomDialog(
+    BuildContext context, {
+    required String title,
+    String deleteBtnText = "Delete",
+    String saveBtnText = "Save",
+    required String path,
+  }) {
     ///
     TextEditingController textEditingController = TextEditingController();
 
@@ -30,10 +29,9 @@ class DialogUtils {
         builder: (BuildContext context) {
           return Dialog(
             shape: RoundedRectangleBorder(
-                borderRadius:
-                BorderRadius.circular(25.0)), //this right here
-            child: Container(
-              height: 200,
+                borderRadius: BorderRadius.circular(25.0)), //this right here
+            child: SizedBox(
+              height: 170,
               child: Padding(
                 padding: const EdgeInsets.all(12.0),
                 child: Column(
@@ -42,19 +40,38 @@ class DialogUtils {
                   children: [
                     TextField(
                       controller: textEditingController,
-                      decoration: InputDecoration(
-                          border: InputBorder.none,
-                          hintText: 'Name of recording'),
-                    ),
 
+                      decoration: InputDecoration(
+                          labelText: 'Enter Recording Name',
+
+                          enabledBorder: OutlineInputBorder(
+                            borderSide:
+                                const BorderSide(width: 1, color:  Colors.blueAccent,),
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+
+                          focusedBorder: OutlineInputBorder(
+                            borderSide:
+                                const BorderSide(width: 1, color: Colors.blueAccent,),
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          
+                          border: InputBorder.none,
+                          // hintText: 'Enter here',
+                          ),
+                    ),
+                    const SizedBox(
+                      height: 15,
+                    ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         SizedBox(
                           child: TextButton(
-                            onPressed: () async{
-                              PlayerController tempHeartBeatPlayerController = PlayerController();
+                            onPressed: () async {
+                              PlayerController tempHeartBeatPlayerController =
+                                  PlayerController();
 
                               ///
                               await tempHeartBeatPlayerController.preparePlayer(
@@ -64,14 +81,15 @@ class DialogUtils {
                               );
 
                               ///
-                              if(textEditingController.text.isNotEmpty){
+                              if (textEditingController.text.isNotEmpty) {
                                 final file = File(path); // Your file path
-                                String dir = p.dirname(file.path); // Get directory
-                                String newPath = p.join(dir, textEditingController.text); // Rename
+                                String dir =
+                                    p.dirname(file.path); // Get directory
+                                String newPath = p.join(
+                                    dir, textEditingController.text); // Rename
                                 file.renameSync(newPath);
 
                                 PlayerController t = PlayerController();
-
 
                                 await t.preparePlayer(
                                   path: newPath,
@@ -85,19 +103,18 @@ class DialogUtils {
 
                               ///Add to local recording Map/Iterable for Global context
                               ///usage without having to read from Local Storage
-                              AppDirectorySingleton().addToHeartBeatAndPathMap(path, tempHeartBeatPlayerController);
+                              AppDirectorySingleton().addToHeartBeatAndPathMap(
+                                  path, tempHeartBeatPlayerController);
 
                               Navigator.pop(context);
-
                             },
                             //color: const Color(0xFF1BC0C5),
                             child: const Text(
-                              "save",
+                              "Save",
                               // style: TextStyle(color: Colors.white),
                             ),
                           ),
                         ),
-
                         SizedBox(
                           child: TextButton(
                             onPressed: () {
@@ -106,7 +123,8 @@ class DialogUtils {
                               file.deleteSync();
 
                               ///
-                              AppDirectorySingleton().deleteFromHeartBeatAndPathMap(path);
+                              AppDirectorySingleton()
+                                  .deleteFromHeartBeatAndPathMap(path);
 
                               ///
                               Navigator.pop(context);
@@ -120,7 +138,6 @@ class DialogUtils {
                         )
                       ],
                     )
-
                   ],
                 ),
               ),
