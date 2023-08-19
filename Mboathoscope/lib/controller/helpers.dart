@@ -85,7 +85,7 @@ class helpers{
       ///Rename file
       ///It has a bug: After a successful rename, the audioplayer, loses it wave data,
       ///so this function will always be false since I have set input field to read only
-      AppDirectorySingleton().renameHeartBeatAndPathMap(newPath: textEditingController.text, oldPath: oldPath);
+      AppDirectorySingleton().renamesRecording(newFilename: textEditingController.text, oldPath: oldPath);
 
 
       ///Clears textfiled after saving file so default file name takes over for new file name

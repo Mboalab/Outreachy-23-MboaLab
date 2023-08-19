@@ -77,6 +77,7 @@ class _RecordingListState extends State<RecordingList> {
                               child: WaveformButton(
                                   playerController:listOfRecordings[index].playerController,
                                   fileName:listOfRecordings[index].filename,
+                                  path: listOfRecordings[index].pathname,
                               ),
                             ),
                           ],

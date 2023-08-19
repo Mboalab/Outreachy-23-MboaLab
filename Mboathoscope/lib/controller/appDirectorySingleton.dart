@@ -67,7 +67,7 @@ class AppDirectorySingleton with ChangeNotifier{
 
 
   ///Removes recording from application Directory memory and global singleton value
-  deleteFromHeartBeatAndPathMap(String path){
+  deletesRecording(String path){
     ///remove from app directory storage
     helpers().deleteRecording(path);
 
@@ -87,10 +87,10 @@ class AppDirectorySingleton with ChangeNotifier{
   ///oldFile: Full Path of file
   ///It has a bug: After a successful rename, the audioplayer, loses it wave data
   ///Plan to debug after contribution to find out why
-  renameHeartBeatAndPathMap({required String newPath, required String oldPath})async{
+  renamesRecording({required String newFilename, required String oldPath})async{
     ///rename from app directory storage
     File oldPathFile = File(oldPath);
-    String newfileFullPath = '${oldPathFile.parent.path}/$newPath';
+    String newfileFullPath = '${oldPathFile.parent.path}/$newFilename';
     await oldPathFile.rename(newfileFullPath);
 
     final PlayerController tempPlayerController;

@@ -1,10 +1,17 @@
 import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:flutter/material.dart';
+import 'package:mboathoscope/views/widgets/alert_dialog_rename_rec.dart';
+import '../../controller/appDirectorySingleton.dart';
+
+
+
+
 
 class WaveformButton extends StatefulWidget {
   final PlayerController playerController;
   final String fileName;
-  const WaveformButton({Key? key, required this.playerController,required this.fileName})
+  final String path;
+  const WaveformButton({Key? key, required this.playerController,required this.fileName, required this.path})
       : super(key: key);
 
   @override
@@ -23,6 +30,11 @@ class _WaveformButtonState extends State<WaveformButton> {
   static int millisecondsInAnHour = 3600000;
 
   ///Equivalence of milliseconds in an hour
+
+
+  ///To access delete and rename function of saved recorded files
+  AppDirectorySingleton _appDirectorySingleton = AppDirectorySingleton();
+
 
   @override
   void initState() {
@@ -168,7 +180,16 @@ class _WaveformButtonState extends State<WaveformButton> {
                     padding: const EdgeInsets.only(right: 0.0),
                     child: Container(
                       child: GestureDetector(
-                        onTap: (){},
+                        onTap: (){
+                          ///Pops up dialog box to enter to new filename
+                          DialogUtils_rename.showCustomDialog(context, title: 'title', path: widget.path).
+                              then((value){ ///value represents new filename
+
+                              ///Renames recording recording
+                              _appDirectorySingleton.renamesRecording(newFilename:value, oldPath: widget.path);
+                          });
+
+                        },
                         child: const Icon(
                           Icons.edit_outlined,
                           color: Colors.black,
@@ -185,7 +206,10 @@ class _WaveformButtonState extends State<WaveformButton> {
                     padding: const EdgeInsets.only(right: 0.0),
                     child: Container(
                       child: GestureDetector(
-                        onTap: () {},
+                        onTap: () {
+                          ///Deletes recordings from memory
+                          _appDirectorySingleton.deletesRecording(widget.path);
+                        },
                         child: const Icon(
                           Icons.delete_sweep_outlined,
                           color: Colors.black,

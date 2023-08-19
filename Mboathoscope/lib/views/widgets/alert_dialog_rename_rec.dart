@@ -1,26 +1,31 @@
 import 'dart:io';
-import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:mboathoscope/controller/appDirectorySingleton.dart';
-import 'package:path/path.dart' as p;
 
-class DialogUtils {
-  static final DialogUtils _instance = DialogUtils.internal();
 
-  DialogUtils.internal();
 
-  factory DialogUtils() => _instance;
+class DialogUtils_rename {
+  static final DialogUtils_rename _instance = DialogUtils_rename.internal();
+
+  DialogUtils_rename.internal();
+
+  factory DialogUtils_rename() => _instance;
   static Directory appDirectory = AppDirectorySingleton().appDirectory;
   static String heartBeatFileFolderPath =
       AppDirectorySingleton.heartBeatParentPath;
 
-  static void showCustomDialog(
+  ///to access rename functions
+  static AppDirectorySingleton _appDirectorySingleton = AppDirectorySingleton();
+
+
+  static Future<String> showCustomDialog(
     BuildContext context, {
     required String title,
     String deleteBtnText = "Delete",
     String saveBtnText = "Save",
     required String path,
-  }) {
+  }) async {
     ///
     TextEditingController textEditingController = TextEditingController();
 
@@ -42,7 +47,7 @@ class DialogUtils {
                       controller: textEditingController,
 
                       decoration: InputDecoration(
-                          labelText: 'Enter Recording Name',
+                          labelText: 'Enter new filename',
 
                           enabledBorder: OutlineInputBorder(
                             borderSide:
@@ -70,47 +75,32 @@ class DialogUtils {
                         SizedBox(
                           child: TextButton(
                             onPressed: () async {
-                              PlayerController tempHeartBeatPlayerController =
-                                  PlayerController();
+                              ///renames saved audio file
+                              if(textEditingController.text.isNotEmpty){ ///ensures user provides a new file name before proceeding with rename, a form of input validation
+                                _appDirectorySingleton.renamesRecording(newFilename: textEditingController.text, oldPath: path);
 
-                              ///
-                              await tempHeartBeatPlayerController.preparePlayer(
-                                path: path,
-                                shouldExtractWaveform: true,
-                                volume: 1.0,
-                              );
+                                ///close dialog box
+                                Navigator.pop(context);
 
-                              ///
-                              if (textEditingController.text.isNotEmpty) {
-                                final file = File(path); // Your file path
-                                String dir =
-                                    p.dirname(file.path); // Get directory
-                                String newPath = p.join(
-                                    dir, textEditingController.text); // Rename
-                                file.renameSync(newPath);
-
-                                PlayerController t = PlayerController();
-
-                                await t.preparePlayer(
-                                  path: newPath,
-                                  shouldExtractWaveform: true,
-                                  volume: 1.0,
+                              }
+                              else{
+                                ///flutter toast feedback
+                                Fluttertoast.showToast(
+                                    msg: "You have provided a new file name",
+                                    toastLength: Toast.LENGTH_SHORT,
+                                    gravity: ToastGravity.CENTER,
+                                    timeInSecForIosWeb: 1,
+                                    backgroundColor: Colors.red,
+                                    textColor: Colors.white,
+                                    fontSize: 16.0
                                 );
 
-                                ///reset path to the newpath
-                                path = newPath;
                               }
 
-                              ///Add to local recording Map/Iterable for Global context
-                              ///usage without having to read from Local Storage
-                              AppDirectorySingleton().addToHeartBeatAndPathMap(
-                                  path, tempHeartBeatPlayerController);
-
-                              Navigator.pop(context);
                             },
                             //color: const Color(0xFF1BC0C5),
                             child: const Text(
-                              "Save",
+                              "Rename",
                               // style: TextStyle(color: Colors.white),
                             ),
                           ),
@@ -118,20 +108,12 @@ class DialogUtils {
                         SizedBox(
                           child: TextButton(
                             onPressed: () {
-                              ///
-                              final file = File(path);
-                              file.deleteSync();
-
-                              ///
-                              AppDirectorySingleton()
-                                  .deletesRecording(path);
-
-                              ///
+                              ///stops or cancels rename attempt
                               Navigator.pop(context);
                             },
                             //color: const Color(0xFF1BC0C5),
                             child: const Text(
-                              "Delete",
+                              "Cancel",
                               // style: TextStyle(color: Colors.white),
                             ),
                           ),
@@ -144,5 +126,8 @@ class DialogUtils {
             ),
           );
         });
+
+       ///Returns value of new file name or null in the case where new file name was not provided.
+       return textEditingController.text;
   }
 }
