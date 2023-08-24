@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "517672995365",
+    "firebase_url": "https://mboatoscope-default-rtdb.firebaseio.com",
     "project_id": "mboatoscope",
     "storage_bucket": "mboatoscope.appspot.com"
   },

@@ -6,7 +6,6 @@ import 'package:mboathoscope/views/buttons/CustomButton.dart';
 class StartPage extends StatelessWidget {
   const StartPage({Key? key}) : super(key: key);
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
 
@@ -45,7 +44,7 @@ class StartPage extends StatelessWidget {
               ),
               GestureDetector(
                 onTap: (){
-                  Navigator.pushNamed(context,'/rolepage');
+                  Navigator.pushNamed(context,'/login');
                 },
                 child: const Padding(
                   padding: EdgeInsets.only(bottom: 199),

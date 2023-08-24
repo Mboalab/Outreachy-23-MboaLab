@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:mboathoscope/views/HomePage.dart';
 import 'package:mboathoscope/views/LoginPage.dart';
-import 'package:mboathoscope/views/RegisterPage.dart';
 import 'package:lottie/lottie.dart';
 import 'package:mboathoscope/views/OTPpage.dart';
+import 'package:cloud_firestore/cloud_firestore.dart' as cft;
+import 'package:uuid/uuid.dart';
+import '../models/User.dart';
+
+
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -18,6 +21,11 @@ class _LoginPageState extends State<RegisterPage> {
   final TextEditingController NameController = TextEditingController();
   final TextEditingController AgeController = TextEditingController();
   final TextEditingController GenderController = TextEditingController();
+
+  ///
+  final db = cft.FirebaseFirestore.instance;
+  bool phoneNumberExist = false;
+  String errorText = "";
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +72,10 @@ class _LoginPageState extends State<RegisterPage> {
             return ("Phone number is required for login with country code");
           }
           if (!regex.hasMatch(value)) {
-            return ("Enter Valid Password(Min. 10 Character)");
+            return ("Enter Valid Phone number (Min. 10 Character)");
+          }
+          if(phoneNumberExist){
+            return ("Phone number exists");
           }
           return null;
         },
@@ -75,10 +86,11 @@ class _LoginPageState extends State<RegisterPage> {
         decoration: InputDecoration(
           filled: true,
           fillColor: Colors.blue.shade100,
-          // errorBorder: const OutlineInputBorder(
-          //     borderSide: BorderSide(color: Colors.white60)),
+          errorBorder: const OutlineInputBorder(
+              borderSide: BorderSide(color: Colors.white60)),
           errorStyle:
-              const TextStyle(color: Color.fromARGB(255, 249, 249, 249)),
+              const TextStyle(color: Colors.red),
+          errorText: errorText,
           // prefixIcon: const Icon(
           //   Icons.phone,
           //   color: Colors.white,
@@ -181,36 +193,6 @@ class _LoginPageState extends State<RegisterPage> {
           )),
     );
 
-    final loginButton = Material(
-      elevation: 5,
-      borderRadius: BorderRadius.circular(5),
-      child: Container(
-        decoration: BoxDecoration(
-            gradient: const LinearGradient(
-              colors: [
-                Colors.blue,
-                Colors.blueAccent,
-              ],
-            ),
-            borderRadius: BorderRadius.circular(5)),
-        child: MaterialButton(
-            padding: EdgeInsets.fromLTRB(w * .1, h * 0.015, w * .1, h * 0.015),
-            minWidth: MediaQuery.of(context).size.width,
-            onPressed: () {
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => HomePage()));
-            },
-            child: Text(
-              "Register",
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                  fontSize: 20,
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold),
-            )),
-      ),
-    );
-
     return Container(
       decoration: const BoxDecoration(
         color: const Color(0xffF3F7FF),
@@ -274,11 +256,41 @@ class _LoginPageState extends State<RegisterPage> {
                                 // padding: EdgeInsets.fromLTRB(
                                 //     w * .1, h * 0.005, w * .1, h * 0.005),
                                 minWidth: MediaQuery.of(context).size.width,
-                                onPressed: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => OtpPage()));
+                                onPressed: () async{
+                                  ///resets error message
+                                  phoneNumberExist = false;
+                                  errorText="";
+
+                                  ///check if number exists
+                                  await db.collection('Users').where('phoneNumber', isEqualTo: phoneNumberController.text).get().then((value){
+                                    if(value.docs.length>0){
+                                      setState(() {
+                                        phoneNumberExist = true;
+
+                                        ///
+                                        errorText="Phone Number already exists";
+                                      });
+
+                                    }else{
+                                      ///creates user credentials object
+                                      final user = <String, dynamic>{
+                                        'uid': Uuid().v4(),
+                                        'fullName': NameController.text,
+                                        'age': AgeController.text,
+                                        'gender': GenderController.text,
+                                        'phoneNumber': phoneNumberController.text
+                                      };
+
+                                      /// Add a new user with a generated ID
+                                      db.collection("Users").add(user);
+
+                                      ///Nagitates to OTP Page for authentication
+                                      Navigator.push(context, MaterialPageRoute(
+                                              builder: (context) => OtpPage(customerUser: CustomUser.fromMap(user),)));
+
+                                    }
+                                  });
+
                                 },
                                 child: Text(
                                   "Register",

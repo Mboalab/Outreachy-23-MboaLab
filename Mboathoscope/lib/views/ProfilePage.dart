@@ -1,7 +1,12 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import '../models/User.dart';
+
+
 
 class ProfilePage extends StatelessWidget {
-  const ProfilePage({super.key});
+  final CustomUser user;
+  const ProfilePage({super.key, required this.user});
 
   @override
   Widget build(BuildContext context) {
@@ -13,7 +18,7 @@ class ProfilePage extends StatelessWidget {
             const SizedBox(
               height: 100,
             ),
-            Text("JUNE SEBASTIAN",
+            Text(this.user.fullName,
                 style: TextStyle(
                     fontSize: 25,
                     fontWeight: FontWeight.bold,
@@ -73,7 +78,7 @@ class ProfilePage extends StatelessWidget {
                                 const SizedBox(
                                   width: 5,
                                 ),
-                                Text("June"),
+                                Text(this.user.fullName.split(" ").first),
                               ],
                             ),
                             SizedBox(
@@ -93,7 +98,7 @@ class ProfilePage extends StatelessWidget {
                                 const SizedBox(
                                   width: 5,
                                 ),
-                                Text("Sebastian"),
+                                Text(this.user.fullName.split(" ").last),
                               ],
                             ),
                             SizedBox(
@@ -119,7 +124,7 @@ class ProfilePage extends StatelessWidget {
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              Text("Female"),
+                              Text(this.user.gender),
                             ]),
                             SizedBox(
                               height: 10,
@@ -163,7 +168,7 @@ class ProfilePage extends StatelessWidget {
                                 const SizedBox(
                                   width: 5,
                                 ),
-                                Text("98XXXXXX10"),
+                                Text(this.user.phoneNumber),
                               ],
                             ),
                             SizedBox(
@@ -245,13 +250,34 @@ class ProfilePage extends StatelessWidget {
                 ),
               ),
             ),
-            ElevatedButton(
-              onPressed: () {},
-              style: ButtonStyle(
-                backgroundColor:  MaterialStateProperty.all( Color(0xff3D79FD)),
-                
-              ),
-              child: Text("Edit Profile"),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                ElevatedButton(
+                  onPressed: () async{
+                    FirebaseAuth.instance.signOut().then((value){
+                      Navigator.of(context).popUntil(ModalRoute.withName("/login"));
+                    }).catchError((error){
+                          debugPrint(error.toString());
+                    });
+                  },
+                  style: ButtonStyle(
+                    backgroundColor:  MaterialStateProperty.all( Colors.grey),
+
+                  ),
+                  child: Text("Logout"),
+                ),
+                SizedBox(width: 5,),
+                ElevatedButton(
+                  onPressed: () {},
+                  style: ButtonStyle(
+                    backgroundColor:  MaterialStateProperty.all( Color(0xff3D79FD)),
+
+                  ),
+                  child: Text("Edit Profile"),
+                ),
+              ],
             )
           ],
         ),

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:mboathoscope/views/HomePage.dart';
 import 'package:mboathoscope/views/RegisterPage.dart';
 import 'package:lottie/lottie.dart';
 import 'package:mboathoscope/views/OTPpage.dart';
+import '../models/User.dart';
+
+
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -30,7 +32,7 @@ class _LoginPageState extends State<LoginPage> {
             return ("Phone number is required for login with country code");
           }
           if (!regex.hasMatch(value)) {
-            return ("Enter Valid Password(Min. 10 Character)");
+            return ("Enter Valid phoneNumber (Min. 10 Character)");
           }
           return null;
         },
@@ -77,8 +79,10 @@ class _LoginPageState extends State<LoginPage> {
             padding: EdgeInsets.fromLTRB(w * .1, h * 0.015, w * .1, h * 0.015),
             minWidth: MediaQuery.of(context).size.width,
             onPressed: () {
+              ///Moves to OTP Page to allow user to confirm password
               Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => OtpPage()));
+                  context, MaterialPageRoute(builder: (context) => OtpPage(customerUser:
+                     CustomUser(phoneNumber: phoneNumberController.text, uid: '', fullName: '', gender: '', age: ''))));
             },
             child: Text(
               "Login",

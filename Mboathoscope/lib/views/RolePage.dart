@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:mboathoscope/views/buttons/CustomButton.dart';
+import 'package:mboathoscope/views/homePage.dart';
+import '../models/User.dart';
 
 
 class RolePage extends StatelessWidget {
-  const RolePage({Key? key}) : super(key: key);
+  static const id = 'RolePage';
+  final CustomUser user;
+  const RolePage({Key? key, required this.user}) : super(key: key);
 
-  // This widget is the root of your application.
+
   @override
   Widget build(BuildContext context) {
 
@@ -58,7 +62,8 @@ class RolePage extends StatelessWidget {
             padding: const EdgeInsets.only(left: 0, top: 40),
             child: GestureDetector(
               onTap: (){
-                Navigator.pushNamed(context,'/homepage');
+                ///
+                Navigator.push(context, MaterialPageRoute(builder: (context) => HomePage(user: this.user)));
               },
               child: Container(
                 width: 120,
