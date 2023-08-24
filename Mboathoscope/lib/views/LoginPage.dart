@@ -3,6 +3,7 @@ import 'package:mboathoscope/views/RegisterPage.dart';
 import 'package:lottie/lottie.dart';
 import 'package:mboathoscope/views/OTPpage.dart';
 import '../models/User.dart';
+import 'package:cloud_firestore/cloud_firestore.dart' as cft;
 
 
 
@@ -15,6 +16,9 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController phoneNumberController = TextEditingController();
+  final db = cft.FirebaseFirestore.instance;
+  String errorText = "";
+  bool accountNotRegistered = false;
 
   @override
   Widget build(BuildContext context) {
@@ -34,6 +38,9 @@ class _LoginPageState extends State<LoginPage> {
           if (!regex.hasMatch(value)) {
             return ("Enter Valid phoneNumber (Min. 10 Character)");
           }
+          if(accountNotRegistered){
+            return errorText;
+          }
           return null;
         },
 
@@ -44,9 +51,10 @@ class _LoginPageState extends State<LoginPage> {
         decoration: InputDecoration(
           filled: true,
           fillColor: Colors.blue.shade100,
-          // errorBorder: const OutlineInputBorder(
-          //     borderSide: BorderSide(color: Colors.white60)),
-          errorStyle: const TextStyle(color: Color.fromARGB(255, 249, 249, 249)),
+          errorBorder: const OutlineInputBorder(
+              borderSide: BorderSide(color: Colors.white60)),
+          errorStyle: const TextStyle(color: Colors.red),
+          errorText: errorText,
           prefixIcon: const Icon(
             Icons.phone,
             color: Colors.white,
@@ -78,11 +86,26 @@ class _LoginPageState extends State<LoginPage> {
         child: MaterialButton(
             padding: EdgeInsets.fromLTRB(w * .1, h * 0.015, w * .1, h * 0.015),
             minWidth: MediaQuery.of(context).size.width,
-            onPressed: () {
-              ///Moves to OTP Page to allow user to confirm password
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => OtpPage(customerUser:
-                     CustomUser(phoneNumber: phoneNumberController.text, uid: '', fullName: '', gender: '', age: ''))));
+            onPressed: () async{
+              ///deactivate all error messages
+              errorText = "";
+              accountNotRegistered = false;
+
+              await db.collection('Users').where('phoneNumber', isEqualTo: phoneNumberController.text).get().then((value){
+                if(value.docs.length==0){
+                  ///account hasn't been registered
+                  setState(() {
+                    accountNotRegistered = true;
+                    errorText="account doesn't exist, sign up instead";
+                  });
+
+                }else{
+                  ///Moves to OTP Page to allow user to confirm password
+                  Navigator.push(
+                      context, MaterialPageRoute(builder: (context) => OtpPage(customerUser:
+                  CustomUser(phoneNumber: phoneNumberController.text.replaceAll(" ", ""), uid: '', fullName: '', gender: '', age: ''))));
+                }
+              });
             },
             child: Text(
               "Login",

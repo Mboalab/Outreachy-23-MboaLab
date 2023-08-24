@@ -278,7 +278,7 @@ class _LoginPageState extends State<RegisterPage> {
                                         'fullName': NameController.text,
                                         'age': AgeController.text,
                                         'gender': GenderController.text,
-                                        'phoneNumber': phoneNumberController.text
+                                        'phoneNumber': phoneNumberController.text.replaceAll(" ", "")
                                       };
 
                                       /// Add a new user with a generated ID

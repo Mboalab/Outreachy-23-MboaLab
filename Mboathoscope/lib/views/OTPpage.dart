@@ -72,8 +72,19 @@ class _OtpPageState extends State<OtpPage> with WidgetsBindingObserver{
               fontSize: 16.0
           );
 
-        }else{
+        }else if(e.toString().contains('firebase_auth/session-expired')){
+          ///handle expired otp code
+          Fluttertoast.showToast(
+              msg: "otp code expired, send again to resend",
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.TOP,
+              timeInSecForIosWeb: 5,
+              backgroundColor: Colors.red,
+              textColor: Colors.white,
+              fontSize: 16.0
+          );
 
+        }else{
           ///handles any other error, could be wrong number, network etc
           Fluttertoast.showToast(
               msg: "Error while verifyinying code",
@@ -89,6 +100,30 @@ class _OtpPageState extends State<OtpPage> with WidgetsBindingObserver{
     });
   }
 
+  ///
+  initiateVerification()async{
+    await _auth.verifyPhoneNumber(
+      phoneNumber: widget.customerUser.phoneNumber,
+      timeout: Duration(seconds: 60),
+      verificationCompleted: (PhoneAuthCredential credential) async {
+        await _auth.signInWithCredential(credential).then(
+              (value) => debugPrint('Logged In Successfully'),
+        );
+      },
+      verificationFailed: (FirebaseAuthException e) {
+        debugPrint(e.message);
+      },
+      codeSent: (String verificationId, int? resendToken) {
+        receivedID = verificationId;
+        otpFieldVisibility = true;
+        setState(() {});
+      },
+      codeAutoRetrievalTimeout: (String verificationId) {
+        debugPrint('TimeOut');
+      },
+    );
+  }
+
 
 
   @override
@@ -97,26 +132,7 @@ class _OtpPageState extends State<OtpPage> with WidgetsBindingObserver{
     WidgetsBinding.instance.addObserver(this);
 
     ///Sends verifications code/initiates authentication
-    _auth.verifyPhoneNumber(
-        phoneNumber: widget.customerUser.phoneNumber,
-        timeout: Duration(seconds: 60),
-        verificationCompleted: (PhoneAuthCredential credential) async {
-          await _auth.signInWithCredential(credential).then(
-                (value) => debugPrint('Logged In Successfully'),
-          );
-        },
-        verificationFailed: (FirebaseAuthException e) {
-          debugPrint(e.message);
-        },
-        codeSent: (String verificationId, int? resendToken) {
-          receivedID = verificationId;
-          otpFieldVisibility = true;
-          setState(() {});
-        },
-        codeAutoRetrievalTimeout: (String verificationId) {
-          debugPrint('TimeOut');
-        },
-    );
+    initiateVerification();
 
     super.initState();
   }
@@ -159,7 +175,9 @@ class _OtpPageState extends State<OtpPage> with WidgetsBindingObserver{
                   color:  Color(0xff3D79FD),),
             ),
             Text(
-              "      On Number - 95XXXXXX08",
+              "      On Number - ${widget.customerUser.phoneNumber.substring(2,4)}"
+                      "XXXXXX"+widget.customerUser.phoneNumber.
+                        substring(widget.customerUser.phoneNumber.length-2, widget.customerUser.phoneNumber.length),
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500,color: Colors.blueGrey),
             ),
             const SizedBox(height: 10),
@@ -230,9 +248,14 @@ class _OtpPageState extends State<OtpPage> with WidgetsBindingObserver{
                   "      SMS not receireceived ? ",
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
                 ),
-                Text(
-                  "SEND AGAIN",
-                  style: TextStyle(fontSize: 16, color:  Color(0xff3D79FD),fontWeight: FontWeight.w600),
+                TextButton(
+                  child: Text("SEND AGAIN",
+                    style: TextStyle(fontSize: 16, color:  Color(0xff3D79FD),fontWeight: FontWeight.w600),
+                  ),
+                  onPressed: () async{
+                    ///
+                    await initiateVerification();
+                  },
                 ),
               ],
             ),
