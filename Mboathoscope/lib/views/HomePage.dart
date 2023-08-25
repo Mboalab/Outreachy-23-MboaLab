@@ -1,23 +1,67 @@
 import 'package:flutter/material.dart';
+import 'package:mboathoscope/models/User.dart';
+import 'package:mboathoscope/views/ProfilePage.dart';
 import 'package:mboathoscope/views/widgets/RecordingList.dart';
 import 'package:mboathoscope/views/widgets/HomePage_headerHalf.dart';
 
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+  final CustomUser user;
+  const HomePage({Key? key, required this.user}) : super(key: key);
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  // This widget is the root of your application.
 
+  ///index user has clicked/active navigation button
   int _selectedIndex = 0;
   void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
+
+    ///for navigation page except settings
+    if(index<3){
+      setState(() {
+        _selectedIndex = index;
+      });
+    }
+
+    ///for settings page
+    if(index==3){
+      setState(() {
+        _selectedIndex = index;
+      });
+    }
+  }
+
+  ///
+  List<Widget> widgetList(){
+    return [
+
+      ///navigation bottom 0
+      Column(
+        children: const [
+          headerHalf(),
+          RecordingList()
+        ],
+      ),
+
+      ///navigation bottom 1
+      Container(),
+
+      ///navigation bottom 2
+      Container(),
+
+      ///navigation bottom 3
+      ProfilePage(user: widget.user,)
+
+    ];
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
   }
 
   @override
@@ -26,12 +70,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       backgroundColor: const Color(0xffF3F7FF),
       body: SingleChildScrollView(
-        child: Column(
-          children: const [
-            headerHalf(),
-            RecordingList()
-          ],
-        ),
+        child: widgetList()[_selectedIndex],
       ),
 
       bottomNavigationBar: BottomNavigationBar(
