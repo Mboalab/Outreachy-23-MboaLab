@@ -282,5 +282,3 @@ class _WaveformButtonState extends State<WaveformButton> {
     );
   }
 }
-
-class Helpers {}

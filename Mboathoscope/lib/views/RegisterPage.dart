@@ -1,8 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:mboathoscope/controller/helpers.dart';
 import 'package:mboathoscope/views/LoginPage.dart';
 import 'package:lottie/lottie.dart';
-import 'package:mboathoscope/views/OTPpage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart' as cft;
+import 'package:mboathoscope/views/RolePage.dart';
 import 'package:uuid/uuid.dart';
 import '../models/User.dart';
 
@@ -19,13 +21,65 @@ class _LoginPageState extends State<RegisterPage> {
 
   final TextEditingController phoneNumberController = TextEditingController();
   final TextEditingController NameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController verifyPasswordController = TextEditingController();
   final TextEditingController AgeController = TextEditingController();
   final TextEditingController GenderController = TextEditingController();
 
   ///
   final db = cft.FirebaseFirestore.instance;
   bool phoneNumberExist = false;
+  bool emailErrorExist = false;
   String errorText = "";
+  String emailErrorText = "";
+  bool _obscureText = true;
+  FirebaseAuth _auth = FirebaseAuth.instance;
+
+
+
+  ///Creates an email and password authentication for this account.
+  initiateVerificationEmailAndPassword(CustomUser customUser)async{
+    try{
+      await _auth.createUserWithEmailAndPassword(email: emailController.text, password: passwordController.text).
+      then((value)async{
+        /// Add a new user with a generated ID
+        await db.collection("Users").add(customUser.toJson());
+
+        if(value.user!=null){
+          ///Signup already have user details
+          Navigator.push(context, MaterialPageRoute(builder: (context) => RolePage(user: customUser)));
+        }
+      });
+    }catch(error){
+      ///
+      emailErrorExist = true;
+
+      ///Thrown if there already exists an account with the given email address.
+      if(error.toString().contains('email-already-in-use')){
+        setState(() {
+          emailErrorText = 'Email already in use';
+        });
+        ///Thrown if the email address is not valid.
+      }else if(error.toString().contains('invalid-email')){
+        setState(() {
+          emailErrorText = "Invalid email";
+        });
+        ///Thrown if email/password accounts are not enabled. Enable email/password accounts
+        ///in the Firebase Console, under the Auth tab.
+      }else if(error.toString().contains("operation-not-allowed")){
+        setState(() {
+          emailErrorText = "Ooops, server error";
+        });
+        ///Thrown if the password is not strong enough.
+      }else if(error.toString().contains("weak-password")){
+        setState(() {
+          emailErrorText = "weak-password";
+        });
+      }
+    }
+
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,24 +97,108 @@ class _LoginPageState extends State<RegisterPage> {
         decoration: InputDecoration(
           filled: true,
           fillColor: Colors.blue.shade100,
-          // errorBorder: const OutlineInputBorder(
-          //     borderSide: BorderSide(color: Colors.white60)),
           errorStyle:
               const TextStyle(color: Color.fromARGB(255, 249, 249, 249)),
-          // prefixIcon: const Icon(
-          //   Icons.person,
-          //   color: Colors.white,
-          // ),
-          // contentPadding:
-          //     EdgeInsets.fromLTRB(w * .0005, 0, w * .0005, 0),
           hintText: "Name",
           hintStyle: const TextStyle(fontSize: 18.0, color: Colors.white70),
-          // border: OutlineInputBorder(
-          //   borderSide: const BorderSide(color: Color.fromARGB(255, 255, 255, 255)),
-          //   borderRadius: BorderRadius.circular(10),
-          // ),
           border: InputBorder.none,
         ));
+
+    final emailField = TextFormField(
+        autofocus: false,
+        controller: emailController,
+        keyboardType: TextInputType.emailAddress,
+        validator: (value) {
+          if(value!.isEmpty){
+            return 'this field can\'t be empty';
+          }else if(RegExp(r"^[a-zA-Z\d.a-zA-Z\d.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z\d]+\.[a-zA-Z] +").hasMatch(value)){
+            return "incorrect email format";
+          }else if(!value.contains('@')){
+            return "invalid email format";
+          }else if(emailErrorExist){
+            return emailErrorText;
+          }
+          return null;
+        },
+        onSaved: (value) {
+          emailController.text = value!;
+        },
+        textInputAction: TextInputAction.done,
+        decoration: InputDecoration(
+          filled: true,
+          fillColor: Colors.blue.shade100,
+          errorBorder: const OutlineInputBorder(
+              borderSide: BorderSide(color: Colors.white60)),
+          errorStyle: const TextStyle(color: Colors.red),
+          errorText: emailErrorText,
+          hintText: "Email",
+          hintStyle: const TextStyle(fontSize: 18.0, color: Colors.white70),
+          border: InputBorder.none,
+        ));
+
+    final passwordField = TextFormField(
+        autofocus: false,
+        controller: passwordController,
+        keyboardType: TextInputType.visiblePassword,
+        obscureText: _obscureText,
+        validator: (value) {
+          if(value!.isEmpty){
+            return "Password cannot be empty";
+          }else if(!helpers().isPasswordCompliant(value)){
+            return "Password must be at least 8 character long";
+          }
+          return null;
+        },
+        onSaved: (value) {
+          passwordController.text = value!;
+        },
+        textInputAction: TextInputAction.done,
+        decoration: InputDecoration(
+          filled: true,
+          fillColor: Colors.blue.shade100,
+          errorBorder: const OutlineInputBorder(
+              borderSide: BorderSide(color: Colors.white60)),
+          errorStyle:
+          const TextStyle(color: Colors.red),
+          // errorText: errorText,
+          hintText: "Password",
+          hintStyle: const TextStyle(fontSize: 18.0, color: Colors.white70),
+          border: InputBorder.none,
+        )
+    );
+
+    final verifyPasswordField = TextFormField(
+        autofocus: false,
+        controller: verifyPasswordController,
+        keyboardType: TextInputType.visiblePassword,
+        obscureText: _obscureText,
+        validator: (value) {
+          if(value!.isEmpty){
+            return "Password cannot be empty";
+          }else if(!helpers().isPasswordCompliant(value)){
+            return "Password must be at least 8 character long";
+          }else if(passwordController.text!=value){
+            return "Password don't match";
+          }
+          return null;
+        },
+        onSaved: (value) {
+          verifyPasswordController.text = value!;
+        },
+        textInputAction: TextInputAction.done,
+        decoration: InputDecoration(
+          filled: true,
+          fillColor: Colors.blue.shade100,
+          errorBorder: const OutlineInputBorder(
+              borderSide: BorderSide(color: Colors.white60)),
+          errorStyle:
+          const TextStyle(color: Colors.red),
+          // errorText: errorText,
+          hintText: "Verify Password",
+          hintStyle: const TextStyle(fontSize: 18.0, color: Colors.white70),
+          border: InputBorder.none,
+        )
+    );
 
     final phoneNumberField = TextFormField(
         autofocus: false,
@@ -91,20 +229,11 @@ class _LoginPageState extends State<RegisterPage> {
           errorStyle:
               const TextStyle(color: Colors.red),
           errorText: errorText,
-          // prefixIcon: const Icon(
-          //   Icons.phone,
-          //   color: Colors.white,
-          // ),
-          // contentPadding:
-          //     EdgeInsets.fromLTRB(w * .0005, 0, w * .0005, 0),
           hintText: "Phone Number",
           hintStyle: const TextStyle(fontSize: 18.0, color: Colors.white70),
-          // border: OutlineInputBorder(
-          //   borderSide: const BorderSide(color: Color.fromARGB(255, 255, 255, 255)),
-          //   borderRadius: BorderRadius.circular(10),
-          // ),
           border: InputBorder.none,
-        ));
+        )
+    );
 
     final AgeField = SizedBox(
       width: w * .38,
@@ -130,22 +259,12 @@ class _LoginPageState extends State<RegisterPage> {
           decoration: InputDecoration(
             filled: true,
             fillColor: Colors.blue.shade100,
-            // errorBorder: const OutlineInputBorder(
-            //     borderSide: BorderSide(color: Colors.white60)),
+            errorBorder: const OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.white60)),
             errorStyle:
                 const TextStyle(color: Color.fromARGB(255, 249, 249, 249)),
-            // prefixIcon: const Icon(
-            //   Icons.phone,
-            //   color: Colors.white,
-            // ),
-            // contentPadding:
-            //     EdgeInsets.fromLTRB(w * .0005, 0, w * .0005, 0),
             hintText: "Age",
             hintStyle: const TextStyle(fontSize: 18.0, color: Colors.white70),
-            // border: OutlineInputBorder(
-            //   borderSide: const BorderSide(color: Color.fromARGB(255, 255, 255, 255)),
-            //   borderRadius: BorderRadius.circular(10),
-            // ),
             border: InputBorder.none,
           )),
     );
@@ -173,22 +292,10 @@ class _LoginPageState extends State<RegisterPage> {
           decoration: InputDecoration(
             filled: true,
             fillColor: Colors.blue.shade100,
-            // errorBorder: const OutlineInputBorder(
-            //     borderSide: BorderSide(color: Colors.white60)),
             errorStyle:
                 const TextStyle(color: Color.fromARGB(255, 249, 249, 249)),
-            // prefixIcon: const Icon(
-            //   Icons.phone,
-            //   color: Colors.white,
-            // ),
-            // contentPadding:
-            //     EdgeInsets.fromLTRB(w * .0005, 0, w * .0005, 0),
             hintText: "Gender",
             hintStyle: const TextStyle(fontSize: 18.0, color: Colors.white70),
-            // border: OutlineInputBorder(
-            //   borderSide: const BorderSide(color: Color.fromARGB(255, 255, 255, 255)),
-            //   borderRadius: BorderRadius.circular(10),
-            // ),
             border: InputBorder.none,
           )),
     );
@@ -227,7 +334,13 @@ class _LoginPageState extends State<RegisterPage> {
                       ),
                       SizedBox(height: h * .01),
                       NameField,
+                      SizedBox(height: h * .03),
+                      emailField,
                       SizedBox(height: h * .02),
+                      passwordField,
+                      // SizedBox(height: h * .01),
+                      verifyPasswordField,
+                      SizedBox(height: h * .01),
                       phoneNumberField,
                       SizedBox(height: h * .02),
                       Row(
@@ -257,12 +370,17 @@ class _LoginPageState extends State<RegisterPage> {
                                 //     w * .1, h * 0.005, w * .1, h * 0.005),
                                 minWidth: MediaQuery.of(context).size.width,
                                 onPressed: () async{
-                                  ///resets error message
-                                  phoneNumberExist = false;
-                                  errorText="";
+                                  setState(() {
+                                    ///resets error message
+                                    phoneNumberExist = false;
+                                    emailErrorExist = false;
+                                    errorText="";
+                                    emailErrorText = "";
+                                  });
 
                                   ///check if number exists
-                                  await db.collection('Users').where('phoneNumber', isEqualTo: phoneNumberController.text).get().then((value){
+                                  await db.collection('Users').where('phoneNumber', isEqualTo: phoneNumberController.text).
+                                       get().then((value)async{
                                     if(value.docs.length>0){
                                       setState(() {
                                         phoneNumberExist = true;
@@ -278,15 +396,12 @@ class _LoginPageState extends State<RegisterPage> {
                                         'fullName': NameController.text,
                                         'age': AgeController.text,
                                         'gender': GenderController.text,
-                                        'phoneNumber': phoneNumberController.text.replaceAll(" ", "")
+                                        'phoneNumber': phoneNumberController.text.replaceAll(" ", ""),
+                                        "email": emailController.text
                                       };
 
-                                      /// Add a new user with a generated ID
-                                      db.collection("Users").add(user);
-
-                                      ///Nagitates to OTP Page for authentication
-                                      Navigator.push(context, MaterialPageRoute(
-                                              builder: (context) => OtpPage(customerUser: CustomUser.fromMap(user),)));
+                                      ///initiate account registration authentitication with email and password
+                                      await initiateVerificationEmailAndPassword(CustomUser.fromMap(user));
 
                                     }
                                   });
