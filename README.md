@@ -60,3 +60,6 @@ Mboathoscope is an open-source digital stethoscope AI app that allows users to r
 
 ## Generated Resources
 * [Compressed version of app apk](https://github.com/Mboalab/Outreachy-23-MboaLab/files/12504251/app-release.apk.zip)
+* Below is a gif of the app features
+* ![Mboatoscope](https://github.com/Mboalab/Outreachy-23-MboaLab/assets/33211695/877f11a0-feeb-42aa-b204-1d5de402fa04)
+
