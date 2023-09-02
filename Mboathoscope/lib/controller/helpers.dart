@@ -114,5 +114,10 @@ class helpers{
   }
 
 
+  ///
+  bool isPasswordCompliant(String password, [int minLength = 8]) {
+    bool hasMinLength = password.length >= minLength;
+    return hasMinLength;
+  }
 
 }

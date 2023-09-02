@@ -1,7 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:mboathoscope/controller/helpers.dart';
 import 'package:mboathoscope/views/RegisterPage.dart';
 import 'package:lottie/lottie.dart';
-import 'package:mboathoscope/views/OTPpage.dart';
+import 'package:mboathoscope/views/RolePage.dart';
 import '../models/User.dart';
 import 'package:cloud_firestore/cloud_firestore.dart' as cft;
 
@@ -16,36 +18,125 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController phoneNumberController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
   final db = cft.FirebaseFirestore.instance;
   String errorText = "";
   bool accountNotRegistered = false;
+  bool emailErrorExist = false;
+  bool passwordErrorExist = false;
+  String emailErrorText = "";
+  String passwordErrorText = "";
+  FirebaseAuth _auth = FirebaseAuth.instance;
+
+
+
+  // signInWithPhone()async{
+  //   await db.collection('Users').where('phoneNumber', isEqualTo: phoneNumberController.text).get().then((value){
+  //     if(value.docs.length==0){
+  //       ///account hasn't been registered
+  //       setState(() {
+  //         accountNotRegistered = true;
+  //         errorText="account doesn't exist, sign up instead";
+  //       });
+  //
+  //     }else{
+  //       ///Moves to OTP Page to allow user to confirm password
+  //       Navigator.push(
+  //           context, MaterialPageRoute(builder: (context) => OtpPage(customerUser:
+  //       CustomUser(phoneNumber: phoneNumberController.text.replaceAll(" ", ""), uid: '', fullName: '', gender: '', age: '', email: ''),
+  //         password: '',)));
+  //     }
+  //   });
+  // }
+
+
+  ///Authenticate user sign in with Email and Password
+  signInWithEmailAndPassword()async{
+    if(emailController.text.isNotEmpty && passwordController.text.isNotEmpty) {
+      await _auth.signInWithEmailAndPassword(email: emailController.text,
+          password: passwordController.text).then((value){
+            if(value.user!=null){
+              ///fetch user details from db
+              db.collection("Users").where('email', isEqualTo: value.user!.email).get().then((value){
+                ///
+                Navigator.push(context, MaterialPageRoute(builder: (context) =>
+                    RolePage(user: CustomUser.fromMap(value.docs.first.data()))));
+              });
+            }
+
+      }).onError((error, stackTrace){
+        debugPrint(error.toString());
+      });
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
     var w = MediaQuery.of(context).size.width;
     var h = MediaQuery.of(context).size.height;
 
-    final phoneNumberField = TextFormField(
+    // final phoneNumberField = TextFormField(
+    //     autofocus: false,
+    //     controller: phoneNumberController,
+    //     keyboardType: TextInputType.phone,
+    //
+    //     validator: (value) {
+    //       RegExp regex = RegExp(r'^.{6,}$');
+    //       if (value!.isEmpty) {
+    //         return ("Phone number is required for login with country code");
+    //       }
+    //       if (!regex.hasMatch(value)) {
+    //         return ("Enter Valid phoneNumber (Min. 10 Character)");
+    //       }
+    //       if(accountNotRegistered){
+    //         return errorText;
+    //       }
+    //       return null;
+    //     },
+    //
+    //     onSaved: (value) {
+    //       phoneNumberController.text = value!;
+    //     },
+    //     textInputAction: TextInputAction.done,
+    //     decoration: InputDecoration(
+    //       filled: true,
+    //       fillColor: Colors.blue.shade100,
+    //       errorBorder: const OutlineInputBorder(
+    //           borderSide: BorderSide(color: Colors.white60)),
+    //       errorStyle: const TextStyle(color: Colors.red),
+    //       errorText: errorText,
+    //       prefixIcon: const Icon(
+    //         Icons.phone,
+    //         color: Colors.white,
+    //       ),
+    //       hintText: "Phone Number",
+    //       hintStyle: const TextStyle(fontSize: 18.0, color: Colors.white70),
+    //       border: InputBorder.none,
+    //
+    //     ));
+
+    final emailField = TextFormField(
         autofocus: false,
-        controller: phoneNumberController,
-        keyboardType: TextInputType.phone,
+        controller: emailController,
+        keyboardType: TextInputType.emailAddress,
 
         validator: (value) {
-          RegExp regex = RegExp(r'^.{6,}$');
-          if (value!.isEmpty) {
-            return ("Phone number is required for login with country code");
-          }
-          if (!regex.hasMatch(value)) {
-            return ("Enter Valid phoneNumber (Min. 10 Character)");
-          }
-          if(accountNotRegistered){
-            return errorText;
+          if(value!.isEmpty){
+            return 'this field can\'t be empty';
+          }else if(RegExp(r"^[a-zA-Z\d.a-zA-Z\d.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z\d]+\.[a-zA-Z] +").hasMatch(value)){
+            return "incorrect email format";
+          }else if(!value.contains('@')){
+            return "invalid email format";
+          }else if(emailErrorExist){
+            return emailErrorText;
           }
           return null;
         },
 
         onSaved: (value) {
-          phoneNumberController.text = value!;
+          emailController.text = value!;
         },
         textInputAction: TextInputAction.done,
         decoration: InputDecoration(
@@ -55,20 +146,43 @@ class _LoginPageState extends State<LoginPage> {
               borderSide: BorderSide(color: Colors.white60)),
           errorStyle: const TextStyle(color: Colors.red),
           errorText: errorText,
-          prefixIcon: const Icon(
-            Icons.phone,
-            color: Colors.white,
-          ),
-          // contentPadding:
-          //     EdgeInsets.fromLTRB(w * .0005, 0, w * .0005, 0),
-          hintText: "Phone Number",
+          hintText: "Email",
           hintStyle: const TextStyle(fontSize: 18.0, color: Colors.white70),
-          // border: OutlineInputBorder(
-          //   borderSide: const BorderSide(color: Color.fromARGB(255, 255, 255, 255)),
-          //   borderRadius: BorderRadius.circular(10),
-          // ),
           border: InputBorder.none,
-          
+
+        ));
+
+    final passwordField = TextFormField(
+        autofocus: false,
+        controller: passwordController,
+        keyboardType: TextInputType.visiblePassword,
+        obscureText: true,
+
+        validator: (value) {
+          if(value!.isEmpty){
+            return "Password cannot be empty";
+          }else if(!helpers().isPasswordCompliant(value)){
+            return "Password must be at least 8 character long";
+          }else if(passwordErrorExist){
+            return passwordErrorText;
+          }
+          return null;
+        },
+        onSaved: (value) {
+          passwordController.text = value!;
+        },
+        textInputAction: TextInputAction.done,
+        decoration: InputDecoration(
+          filled: true,
+          fillColor: Colors.blue.shade100,
+          errorBorder: const OutlineInputBorder(
+              borderSide: BorderSide(color: Colors.white60)),
+          errorStyle: const TextStyle(color: Colors.red),
+          errorText: passwordErrorText,
+          hintText: "Password",
+          hintStyle: const TextStyle(fontSize: 18.0, color: Colors.white70),
+          border: InputBorder.none,
+
         ));
 
     final loginButton = Material(
@@ -90,22 +204,13 @@ class _LoginPageState extends State<LoginPage> {
               ///deactivate all error messages
               errorText = "";
               accountNotRegistered = false;
+              emailErrorText="";
+              passwordErrorText="";
+              emailErrorExist=false;
+              passwordErrorExist=false;
 
-              await db.collection('Users').where('phoneNumber', isEqualTo: phoneNumberController.text).get().then((value){
-                if(value.docs.length==0){
-                  ///account hasn't been registered
-                  setState(() {
-                    accountNotRegistered = true;
-                    errorText="account doesn't exist, sign up instead";
-                  });
-
-                }else{
-                  ///Moves to OTP Page to allow user to confirm password
-                  Navigator.push(
-                      context, MaterialPageRoute(builder: (context) => OtpPage(customerUser:
-                  CustomUser(phoneNumber: phoneNumberController.text.replaceAll(" ", ""), uid: '', fullName: '', gender: '', age: ''))));
-                }
-              });
+              ///Signin with email and Password
+              signInWithEmailAndPassword();
             },
             child: Text(
               "Login",
@@ -150,11 +255,10 @@ class _LoginPageState extends State<LoginPage> {
                         height: h * .4,
                         width: w * .8,
                         child: Lottie.asset('assets/animations/LoginPageAnimation.json'),
-                        // assets\animations\LoginPageAnimation.json
                       ),
                       SizedBox(height: h * .05),
-                      phoneNumberField,
-                      SizedBox(height: h * .04),
+                      emailField,
+                      passwordField,
                       loginButton,
                       SizedBox(height: h * .04),
                       Row(
