@@ -57,3 +57,6 @@ Mboathoscope is an open-source digital stethoscope AI app that allows users to r
 * We will then restructure our app by following the MVC architecture.
 * Improve the UI/UX of our app by leveraging animations.
 * To find Lung sound data and train our first model to detect Lung anomalies as well.
+
+## Generated Resources
+* [Compressed version of app apk](https://github.com/Mboalab/Outreachy-23-MboaLab/files/12504251/app-release.apk.zip)
