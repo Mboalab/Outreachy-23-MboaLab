@@ -7,7 +7,6 @@ import 'package:mboathoscope/models/recordingmodel.dart';
 import 'package:mboathoscope/views/widgets/waveform.dart';
 import 'package:provider/provider.dart';
 
-
 List<Recording> listOfRecordings = [];
 
 List<Recording> getRecordings() {
@@ -34,13 +33,10 @@ class _RecordingListState extends State<RecordingList> {
   Widget build(BuildContext context) {
     // final listOfRecordings = ref.read(RecordingListProvider);
     return Consumer<AppDirectorySingleton>(
-
-      builder: (BuildContext context, value, Widget? child) {
-     
+        builder: (BuildContext context, value, Widget? child) {
       listOfRecordings.clear();
-          
-      value.heartbeatAndPathMap.forEach((key, value) {
 
+      value.heartbeatAndPathMap.forEach((key, value) {
         Recording rec1 = Recording(
           id: key,
           pathname: key,
@@ -75,9 +71,10 @@ class _RecordingListState extends State<RecordingList> {
                             Expanded(
                               flex: 20,
                               child: WaveformButton(
-                                  playerController:listOfRecordings[index].playerController,
-                                  fileName:listOfRecordings[index].filename,
-                                  path: listOfRecordings[index].pathname,
+                                playerController:
+                                    listOfRecordings[index].playerController,
+                                fileName: listOfRecordings[index].filename,
+                                path: listOfRecordings[index].pathname,
                               ),
                             ),
                           ],
@@ -157,7 +154,7 @@ class _RecordingListState extends State<RecordingList> {
     //                       left: 10,
     //                       child: CircleAvatar(
     //                         radius: 5,
-    //                         backgroundColor: Color(0xff3D79FD),
+    //                         backgroundColor: context.theme.primaryColor,
     //                         foregroundColor: Colors.white,
     //                       ), //CircularAvatar
     //                     ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mboathoscope/themes/theme_extension.dart';
 import 'package:mboathoscope/views/buttons/textButton.dart';
 
 class SaveButton extends StatelessWidget {
@@ -13,19 +14,17 @@ class SaveButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return TextButton(
       style: flatButtonStyle,
-      onPressed: (){
+      onPressed: () {
         onPress;
       },
       child: Text(
         txt,
-        style: const TextStyle(
-          color:  Color(0xff3D79FD),
+        style: TextStyle(
+          color: context.theme.primaryColor,
         ),
       ),
     );
   }
-
 }

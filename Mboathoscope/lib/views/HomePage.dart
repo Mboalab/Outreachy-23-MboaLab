@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:mboathoscope/models/User.dart';
+import 'package:mboathoscope/themes/theme_extension.dart';
 import 'package:mboathoscope/views/ProfilePage.dart';
 import 'package:mboathoscope/views/widgets/RecordingList.dart';
 import 'package:mboathoscope/views/widgets/HomePage_headerHalf.dart';
-
 
 class HomePage extends StatefulWidget {
   final CustomUser user;
@@ -14,20 +14,18 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-
   ///index user has clicked/active navigation button
   int _selectedIndex = 0;
   void _onItemTapped(int index) {
-
     ///for navigation page except settings
-    if(index<3){
+    if (index < 3) {
       setState(() {
         _selectedIndex = index;
       });
     }
 
     ///for settings page
-    if(index==3){
+    if (index == 3) {
       setState(() {
         _selectedIndex = index;
       });
@@ -35,15 +33,11 @@ class _HomePageState extends State<HomePage> {
   }
 
   ///
-  List<Widget> widgetList(){
+  List<Widget> widgetList() {
     return [
-
       ///navigation bottom 0
       Column(
-        children: const [
-          headerHalf(),
-          RecordingList()
-        ],
+        children: const [headerHalf(), RecordingList()],
       ),
 
       ///navigation bottom 1
@@ -53,8 +47,9 @@ class _HomePageState extends State<HomePage> {
       Container(),
 
       ///navigation bottom 3
-      ProfilePage(user: widget.user,)
-
+      ProfilePage(
+        user: widget.user,
+      )
     ];
   }
 
@@ -66,47 +61,41 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       backgroundColor: const Color(0xffF3F7FF),
       body: SingleChildScrollView(
         child: widgetList()[_selectedIndex],
       ),
-
       bottomNavigationBar: BottomNavigationBar(
         //backgroundColor: const Color(0xffF3F7FF),
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            backgroundColor:  Color(0xffF3F7FF),
+            backgroundColor: Color(0xffF3F7FF),
             icon: ImageIcon(
               AssetImage("assets/images/img_profile.png"),
             ),
             label: '',
           ),
-
           BottomNavigationBarItem(
             icon: ImageIcon(
               AssetImage("assets/images/img_explore.png"),
             ),
             label: '',
           ),
-
           BottomNavigationBarItem(
             icon: ImageIcon(
               AssetImage("assets/images/img_recordings.png"),
             ),
             label: '',
           ),
-
           BottomNavigationBarItem(
             icon: ImageIcon(
               AssetImage("assets/images/img_setting.png"),
             ),
             label: '',
           ),
-
         ],
-        selectedItemColor:  const Color(0xff3D79FD),
+        selectedItemColor: context.theme.primaryColor,
         unselectedItemColor: Colors.black,
         onTap: _onItemTapped,
       ),
