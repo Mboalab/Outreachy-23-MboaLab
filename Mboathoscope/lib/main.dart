@@ -25,6 +25,7 @@ void main() async {
     child: MaterialApp(
       theme: lightTheme,
       darkTheme: darkTheme,
+      themeMode: ThemeMode.system,
       home: const StartPage(),
       debugShowCheckedModeBanner: false,
       initialRoute: '/',
