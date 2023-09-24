@@ -1,8 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:mboathoscope/themes/theme_extension.dart';
 import '../models/User.dart';
-
-
 
 class ProfilePage extends StatelessWidget {
   final CustomUser user;
@@ -255,25 +254,27 @@ class ProfilePage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 ElevatedButton(
-                  onPressed: () async{
-                    FirebaseAuth.instance.signOut().then((value){
-                      Navigator.of(context).popUntil(ModalRoute.withName("/login"));
-                    }).catchError((error){
-                          debugPrint(error.toString());
+                  onPressed: () async {
+                    FirebaseAuth.instance.signOut().then((value) {
+                      Navigator.of(context)
+                          .popUntil(ModalRoute.withName("/login"));
+                    }).catchError((error) {
+                      debugPrint(error.toString());
                     });
                   },
                   style: ButtonStyle(
-                    backgroundColor:  MaterialStateProperty.all( Colors.grey),
-
+                    backgroundColor: MaterialStateProperty.all(Colors.grey),
                   ),
                   child: Text("Logout"),
                 ),
-                SizedBox(width: 5,),
+                SizedBox(
+                  width: 5,
+                ),
                 ElevatedButton(
                   onPressed: () {},
                   style: ButtonStyle(
-                    backgroundColor:  MaterialStateProperty.all( Color(0xff3D79FD)),
-
+                    backgroundColor:
+                        MaterialStateProperty.all(context.theme.primaryColor),
                   ),
                   child: Text("Edit Profile"),
                 ),

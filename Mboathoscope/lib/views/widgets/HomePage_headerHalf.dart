@@ -3,6 +3,7 @@ import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:flutter/material.dart';
 import 'package:mboathoscope/controller/appDirectorySingleton.dart';
 import 'package:mboathoscope/controller/helpers.dart';
+import 'package:mboathoscope/themes/theme_extension.dart';
 import 'package:mboathoscope/views/widgets/alert_dialog_model.dart';
 import 'package:simple_ripple_animation/simple_ripple_animation.dart';
 
@@ -43,7 +44,6 @@ class _headerHalfState extends State<headerHalf> {
 
   ///
   Widget recordBody() {
-
     if (isRecording) {
       ///recorderController.isRecording: could have used this but issuing stoprecorder doesn't change it state, will investigate why it doesn't refresh
       return InkWell(
@@ -52,12 +52,11 @@ class _headerHalfState extends State<headerHalf> {
           _startOrStopRecording();
         },
         child: SafeArea(
-
           child: AnimatedSwitcher(
               duration: const Duration(milliseconds: 200),
               child: RippleAnimation(
                 repeat: true,
-                color: const Color(0xff3D79FD),
+                color: context.theme.primaryColor,
                 minRadius: 65,
                 ripplesCount: 6,
                 child: const CircleAvatar(
@@ -171,7 +170,6 @@ class _headerHalfState extends State<headerHalf> {
           padding: const EdgeInsets.only(top: 34.0, left: 20, right: 30),
           child: Row(
             children: <Widget>[
-
               Expanded(
                 flex: 5,
                 child: Image.asset(
@@ -180,11 +178,9 @@ class _headerHalfState extends State<headerHalf> {
                   width: 80,
                 ),
               ),
-
               const SizedBox(
                 width: 150,
               ),
-              
               Expanded(
                 flex: 1,
                 child: Padding(
@@ -196,16 +192,15 @@ class _headerHalfState extends State<headerHalf> {
                           'assets/images/img_notiblack.png',
                           height: 35,
                           width: 32,
-                          color: const Color(0xff3D79FD),
+                          color: context.theme.primaryColor,
                         ),
                       ),
-                      
-                      const Positioned(
+                      Positioned(
                         bottom: 0.02,
                         right: 3,
                         child: CircleAvatar(
                           radius: 5,
-                          backgroundColor: Color(0xff3D79FD),
+                          backgroundColor: context.theme.primaryColor,
                           foregroundColor: Colors.white,
                         ), //CircularAvatar
                       ),
@@ -228,10 +223,8 @@ class _headerHalfState extends State<headerHalf> {
             top: 20.0,
             bottom: 20.0,
           ),
-
           child: Row(
             children: <Widget>[
-
               // Expanded(                  // ASK --> heart & lung switch
               //   flex: 1,
               //   //padding: const EdgeInsets.only(left: 2.0, right: 2.0),
@@ -285,8 +278,6 @@ class _headerHalfState extends State<headerHalf> {
             ],
           ),
         ),
-
-      
 
         // Consumer<AppDirectorySingleton>(           // ASK..
         //   builder: (context, appDirSingleton, child) {
