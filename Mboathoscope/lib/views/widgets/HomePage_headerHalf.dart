@@ -1,10 +1,15 @@
 import 'dart:io';
+import 'package:flutter/foundation.dart';
+import 'dart:math';
 import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:flutter/material.dart';
 import 'package:mboathoscope/controller/appDirectorySingleton.dart';
 import 'package:mboathoscope/controller/helpers.dart';
 import 'package:mboathoscope/views/widgets/alert_dialog_model.dart';
 import 'package:simple_ripple_animation/simple_ripple_animation.dart';
+import 'package:ffmpeg_kit_flutter_full_gpl/ffmpeg_kit.dart';
+import 'package:ffmpeg_kit_flutter_full_gpl/log.dart';
+import 'package:ffmpeg_kit_flutter_full_gpl/return_code.dart';
 
 class headerHalf extends StatefulWidget {
   const headerHalf({Key? key}) : super(key: key);
@@ -43,7 +48,6 @@ class _headerHalfState extends State<headerHalf> {
 
   ///
   Widget recordBody() {
-
     if (isRecording) {
       ///recorderController.isRecording: could have used this but issuing stoprecorder doesn't change it state, will investigate why it doesn't refresh
       return InkWell(
@@ -71,20 +75,20 @@ class _headerHalfState extends State<headerHalf> {
                 ),
               )
 
-              // AudioWaveforms(              // ASK..
+            // AudioWaveforms(              // ASK..
 
-              //   enableGesture: false,
-              //   size: Size(MediaQuery.of(context).size.width / 2, 50),
-              //   recorderController: recorderController,
-              //   waveStyle: const WaveStyle(waveColor: Color.fromARGB(255, 161, 14, 14), extendWaveform: true, showMiddleLine: false,
-              //       durationStyle: TextStyle(color: Colors.black), showDurationLabel: true,
-              //       durationLinesColor: Colors.transparent),
-              //   decoration: BoxDecoration(borderRadius: BorderRadius.circular(12.0), color: helpers.appBlueColor,),
-              //   padding: const EdgeInsets.only(left: 18),
-              //   margin: const EdgeInsets.symmetric(horizontal: 15),
-              // )
+            //   enableGesture: false,
+            //   size: Size(MediaQuery.of(context).size.width / 2, 50),
+            //   recorderController: recorderController,
+            //   waveStyle: const WaveStyle(waveColor: Color.fromARGB(255, 161, 14, 14), extendWaveform: true, showMiddleLine: false,
+            //       durationStyle: TextStyle(color: Colors.black), showDurationLabel: true,
+            //       durationLinesColor: Colors.transparent),
+            //   decoration: BoxDecoration(borderRadius: BorderRadius.circular(12.0), color: helpers.appBlueColor,),
+            //   padding: const EdgeInsets.only(left: 18),
+            //   margin: const EdgeInsets.symmetric(horizontal: 15),
+            // )
 
-              ),
+          ),
         ),
       );
     } else {
@@ -137,8 +141,11 @@ class _headerHalfState extends State<headerHalf> {
         ///Stops recording and returns path,
         ///saves file automatically here
         recorderController.stop(false).then((value) async {
-          DialogUtils.showCustomDialog(context, title: 'title', path: path);
+          String outputPath = await executeFFmpegCommand(path!);
+          DialogUtils.showCustomDialog(
+              context, title: 'title', path: outputPath);
         });
+
 
         ///Remove because rename and delete functions have a bug
         ///This allows UI to switch to allow user to either save or delete, also allow for rename
@@ -149,7 +156,9 @@ class _headerHalfState extends State<headerHalf> {
       } else {
         ///States paths for recording to be saved
         path =
-            "${appDirectory.path}/$heartBeatFileFolderPath${DateTime.now().millisecondsSinceEpoch}.mpeg4";
+        "${appDirectory.path}/$heartBeatFileFolderPath${DateTime
+            .now()
+            .millisecondsSinceEpoch}.mpeg4";
 
         await recorderController.record(path: path);
 
@@ -161,6 +170,41 @@ class _headerHalfState extends State<headerHalf> {
     } catch (error) {
       debugPrint(error.toString());
     } finally {}
+  }
+  Future<String> executeFFmpegCommand(String input) async {
+
+    String path = '${appDirectory!.path}/${'audio_message'.substring(0, min('audio_message'.length, 100))}_${DateTime.now().millisecondsSinceEpoch.toString()}.aac';
+    await FFmpegKit
+        .execute(
+        '-y -i $input -af "asplit[a][b],[a]adelay=32S|32S[a],[b][a]anlms=order=128:leakage=0.0005:mu=.5:out_mode=o" $path')
+        .then((session) async{
+      await session.getLogs().then((value) {
+        for (Log i in value) {
+          if (kDebugMode) {
+            print(i.getMessage());
+          }
+        }
+      });
+
+      final returnCode = await session.getReturnCode();
+
+      if (ReturnCode.isSuccess(returnCode)) {
+        if (kDebugMode) {
+          print("FFmpeg process completed successfully.");
+        }
+      } else if (ReturnCode.isCancel(returnCode)) {
+        if (kDebugMode) {
+          print("FFmpeg process cancelled.");
+        }
+        path = "";
+      } else {
+        if (kDebugMode) {
+          print("FFmpeg process failed.");
+        }
+        path = "";
+      }
+    });
+    return path;
   }
 
   @override
@@ -184,7 +228,7 @@ class _headerHalfState extends State<headerHalf> {
               const SizedBox(
                 width: 150,
               ),
-              
+
               Expanded(
                 flex: 1,
                 child: Padding(
@@ -199,7 +243,7 @@ class _headerHalfState extends State<headerHalf> {
                           color: const Color(0xff3D79FD),
                         ),
                       ),
-                      
+
                       const Positioned(
                         bottom: 0.02,
                         right: 3,
@@ -286,7 +330,6 @@ class _headerHalfState extends State<headerHalf> {
           ),
         ),
 
-      
 
         // Consumer<AppDirectorySingleton>(           // ASK..
         //   builder: (context, appDirSingleton, child) {
@@ -304,7 +347,7 @@ class _headerHalfState extends State<headerHalf> {
         ),
         const Padding(
           padding:
-              EdgeInsets.only(top: 10.0, bottom: 8.0, left: 35.0, right: 35.0),
+          EdgeInsets.only(top: 10.0, bottom: 8.0, left: 35.0, right: 35.0),
           child: Text(
             'Please ensure that you are wearing noise cancelling headphones',
             textAlign: TextAlign.center,
@@ -333,5 +376,7 @@ class _headerHalfState extends State<headerHalf> {
         ),
       ],
     );
+
   }
+
 }
