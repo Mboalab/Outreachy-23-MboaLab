@@ -1,5 +1,9 @@
 import 'dart:io';
 import 'package:audio_waveforms/audio_waveforms.dart';
+import 'package:ffmpeg_kit_flutter/ffmpeg_kit.dart';
+import 'package:ffmpeg_kit_flutter/ffmpeg_kit_config.dart';
+import 'package:ffmpeg_kit_flutter/return_code.dart';
+
 import 'package:flutter/material.dart';
 import 'package:mboathoscope/controller/appDirectorySingleton.dart';
 import 'package:mboathoscope/controller/helpers.dart';
@@ -25,6 +29,7 @@ class _headerHalfState extends State<headerHalf> {
   static Directory appDirectory = AppDirectorySingleton().appDirectory;
   AppDirectorySingleton appDirectorySingleton = AppDirectorySingleton();
   String heartBeatFileFolderPath = AppDirectorySingleton.heartBeatParentPath;
+  final FFmpegKitConfig _ffmpegKitConfig = new FFmpegKitConfig();
 
   @override
   void initState() {
@@ -38,7 +43,7 @@ class _headerHalfState extends State<headerHalf> {
       ..androidEncoder = AndroidEncoder.aac
       ..androidOutputFormat = AndroidOutputFormat.mpeg4
       ..iosEncoder = IosEncoder.kAudioFormatMPEG4AAC
-      ..sampleRate = 16000;
+      ..sampleRate = 48000;
   }
 
   ///
@@ -71,20 +76,20 @@ class _headerHalfState extends State<headerHalf> {
                 ),
               )
 
-              // AudioWaveforms(              // ASK..
+            // AudioWaveforms(              // ASK..
 
-              //   enableGesture: false,
-              //   size: Size(MediaQuery.of(context).size.width / 2, 50),
-              //   recorderController: recorderController,
-              //   waveStyle: const WaveStyle(waveColor: Color.fromARGB(255, 161, 14, 14), extendWaveform: true, showMiddleLine: false,
-              //       durationStyle: TextStyle(color: Colors.black), showDurationLabel: true,
-              //       durationLinesColor: Colors.transparent),
-              //   decoration: BoxDecoration(borderRadius: BorderRadius.circular(12.0), color: helpers.appBlueColor,),
-              //   padding: const EdgeInsets.only(left: 18),
-              //   margin: const EdgeInsets.symmetric(horizontal: 15),
-              // )
+            //   enableGesture: false,
+            //   size: Size(MediaQuery.of(context).size.width / 2, 50),
+            //   recorderController: recorderController,
+            //   waveStyle: const WaveStyle(waveColor: Color.fromARGB(255, 161, 14, 14), extendWaveform: true, showMiddleLine: false,
+            //       durationStyle: TextStyle(color: Colors.black), showDurationLabel: true,
+            //       durationLinesColor: Colors.transparent),
+            //   decoration: BoxDecoration(borderRadius: BorderRadius.circular(12.0), color: helpers.appBlueColor,),
+            //   padding: const EdgeInsets.only(left: 18),
+            //   margin: const EdgeInsets.symmetric(horizontal: 15),
+            // )
 
-              ),
+          ),
         ),
       );
     } else {
@@ -149,7 +154,17 @@ class _headerHalfState extends State<headerHalf> {
       } else {
         ///States paths for recording to be saved
         path =
-            "${appDirectory.path}/$heartBeatFileFolderPath${DateTime.now().millisecondsSinceEpoch}.mpeg4";
+        "${appDirectory.path}/$heartBeatFileFolderPath${DateTime.now().millisecondsSinceEpoch}.mpeg4";
+        final denoiseCommand = "-i $path -af nlmeans $path";
+        final session = await FFmpegKit.executeAsync(denoiseCommand);
+        final returnCode = await session.getReturnCode();
+          if (ReturnCode.isSuccess(returnCode)) {
+            print("FFmpeg process completed successfully.");
+          } else if (ReturnCode.isCancel(returnCode)) {
+            print("FFmpeg process cancelled by user.");
+          } else {
+            print("FFmpeg process failed with return code $returnCode.");
+          }
 
         await recorderController.record(path: path);
 
@@ -184,7 +199,7 @@ class _headerHalfState extends State<headerHalf> {
               const SizedBox(
                 width: 150,
               ),
-              
+
               Expanded(
                 flex: 1,
                 child: Padding(
@@ -199,7 +214,7 @@ class _headerHalfState extends State<headerHalf> {
                           color: const Color(0xff3D79FD),
                         ),
                       ),
-                      
+
                       const Positioned(
                         bottom: 0.02,
                         right: 3,
@@ -286,7 +301,7 @@ class _headerHalfState extends State<headerHalf> {
           ),
         ),
 
-      
+
 
         // Consumer<AppDirectorySingleton>(           // ASK..
         //   builder: (context, appDirSingleton, child) {
@@ -304,7 +319,7 @@ class _headerHalfState extends State<headerHalf> {
         ),
         const Padding(
           padding:
-              EdgeInsets.only(top: 10.0, bottom: 8.0, left: 35.0, right: 35.0),
+          EdgeInsets.only(top: 10.0, bottom: 8.0, left: 35.0, right: 35.0),
           child: Text(
             'Please ensure that you are wearing noise cancelling headphones',
             textAlign: TextAlign.center,

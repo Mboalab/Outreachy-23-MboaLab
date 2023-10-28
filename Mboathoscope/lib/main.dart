@@ -35,6 +35,7 @@ void main() async{
           routes: {
             '': (context) => const StartPage(),
             '/rolepage': (context) => RolePage(user: CustomUser(uid: '', fullName: "", phoneNumber: '', age: '', gender: '', email: ''),),
+
             '/login': (context) => const LoginPage(),
             '/homepage': (context) => HomePage(user: CustomUser(uid: '', fullName: "", phoneNumber: '', age: '', gender: '', email: ''),),
           },
