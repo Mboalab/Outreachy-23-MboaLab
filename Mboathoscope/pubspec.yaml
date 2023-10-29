@@ -55,7 +55,8 @@ dependencies:
   cloud_firestore: ^4.9.0
   uuid: ^3.0.7
   firebase_auth: ^4.8.0
-  ffmpeg_kit_flutter:
+  record: ^5.0.1
+  audioplayers: ^5.2.0
 
 
 

@@ -1,14 +1,15 @@
 import 'dart:io';
+import 'package:flutter/foundation.dart';
+import 'dart:math';
 import 'package:audio_waveforms/audio_waveforms.dart';
-import 'package:ffmpeg_kit_flutter/ffmpeg_kit.dart';
-import 'package:ffmpeg_kit_flutter/ffmpeg_kit_config.dart';
-import 'package:ffmpeg_kit_flutter/return_code.dart';
-
 import 'package:flutter/material.dart';
 import 'package:mboathoscope/controller/appDirectorySingleton.dart';
 import 'package:mboathoscope/controller/helpers.dart';
 import 'package:mboathoscope/views/widgets/alert_dialog_model.dart';
 import 'package:simple_ripple_animation/simple_ripple_animation.dart';
+import 'package:ffmpeg_kit_flutter_full_gpl/ffmpeg_kit.dart';
+import 'package:ffmpeg_kit_flutter_full_gpl/log.dart';
+import 'package:ffmpeg_kit_flutter_full_gpl/return_code.dart';
 
 class headerHalf extends StatefulWidget {
   const headerHalf({Key? key}) : super(key: key);
@@ -29,7 +30,6 @@ class _headerHalfState extends State<headerHalf> {
   static Directory appDirectory = AppDirectorySingleton().appDirectory;
   AppDirectorySingleton appDirectorySingleton = AppDirectorySingleton();
   String heartBeatFileFolderPath = AppDirectorySingleton.heartBeatParentPath;
-  final FFmpegKitConfig _ffmpegKitConfig = new FFmpegKitConfig();
 
   @override
   void initState() {
@@ -43,12 +43,11 @@ class _headerHalfState extends State<headerHalf> {
       ..androidEncoder = AndroidEncoder.aac
       ..androidOutputFormat = AndroidOutputFormat.mpeg4
       ..iosEncoder = IosEncoder.kAudioFormatMPEG4AAC
-      ..sampleRate = 48000;
+      ..sampleRate = 16000;
   }
 
   ///
   Widget recordBody() {
-
     if (isRecording) {
       ///recorderController.isRecording: could have used this but issuing stoprecorder doesn't change it state, will investigate why it doesn't refresh
       return InkWell(
@@ -110,7 +109,6 @@ class _headerHalfState extends State<headerHalf> {
         },
       );
 
-
       // Container(                           // ASK..
       //   height: 140,
       //   width: 140,
@@ -143,8 +141,11 @@ class _headerHalfState extends State<headerHalf> {
         ///Stops recording and returns path,
         ///saves file automatically here
         recorderController.stop(false).then((value) async {
-          DialogUtils.showCustomDialog(context, title: 'title', path: path);
+          String outputPath = await executeFFmpegCommand(path!);
+          DialogUtils.showCustomDialog(
+              context, title: 'title', path: outputPath);
         });
+
 
         ///Remove because rename and delete functions have a bug
         ///This allows UI to switch to allow user to either save or delete, also allow for rename
@@ -155,17 +156,9 @@ class _headerHalfState extends State<headerHalf> {
       } else {
         ///States paths for recording to be saved
         path =
-        "${appDirectory.path}/$heartBeatFileFolderPath${DateTime.now().millisecondsSinceEpoch}.mpeg4";
-        final denoiseCommand = "-i $path -af nlmeans $path";
-        final session = await FFmpegKit.executeAsync(denoiseCommand);
-        final returnCode = await session.getReturnCode();
-          if (ReturnCode.isSuccess(returnCode)) {
-            print("FFmpeg process completed successfully.");
-          } else if (ReturnCode.isCancel(returnCode)) {
-            print("FFmpeg process cancelled by user.");
-          } else {
-            print("FFmpeg process failed with return code $returnCode.");
-          }
+        "${appDirectory.path}/$heartBeatFileFolderPath${DateTime
+            .now()
+            .millisecondsSinceEpoch}.mpeg4";
 
         await recorderController.record(path: path);
 
@@ -177,6 +170,41 @@ class _headerHalfState extends State<headerHalf> {
     } catch (error) {
       debugPrint(error.toString());
     } finally {}
+  }
+  Future<String> executeFFmpegCommand(String input) async {
+
+    String path = '${appDirectory!.path}/${'audio_message'.substring(0, min('audio_message'.length, 100))}_${DateTime.now().millisecondsSinceEpoch.toString()}.aac';
+    await FFmpegKit
+        .execute(
+        '-y -i $input -af "asplit[a][b],[a]adelay=32S|32S[a],[b][a]anlms=order=128:leakage=0.0005:mu=.5:out_mode=o" $path')
+        .then((session) async{
+      await session.getLogs().then((value) {
+        for (Log i in value) {
+          if (kDebugMode) {
+            print(i.getMessage());
+          }
+        }
+      });
+
+      final returnCode = await session.getReturnCode();
+
+      if (ReturnCode.isSuccess(returnCode)) {
+        if (kDebugMode) {
+          print("FFmpeg process completed successfully.");
+        }
+      } else if (ReturnCode.isCancel(returnCode)) {
+        if (kDebugMode) {
+          print("FFmpeg process cancelled.");
+        }
+        path = "";
+      } else {
+        if (kDebugMode) {
+          print("FFmpeg process failed.");
+        }
+        path = "";
+      }
+    });
+    return path;
   }
 
   @override
@@ -303,7 +331,6 @@ class _headerHalfState extends State<headerHalf> {
         ),
 
 
-
         // Consumer<AppDirectorySingleton>(           // ASK..
         //   builder: (context, appDirSingleton, child) {
         //     return Text(
@@ -349,5 +376,7 @@ class _headerHalfState extends State<headerHalf> {
         ),
       ],
     );
+
   }
+
 }
