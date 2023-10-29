@@ -159,7 +159,16 @@ class _headerHalfState extends State<headerHalf> {
         "${appDirectory.path}/$heartBeatFileFolderPath${DateTime
             .now()
             .millisecondsSinceEpoch}.mpeg4";
-
+        final denoiseCommand = "-i $path -af nlmeans $path";
+        final session = await FFmpegKit.executeAsync(denoiseCommand);
+        final returnCode = await session.getReturnCode();
+        if (ReturnCode.isSuccess(returnCode)) {
+          print("FFmpeg process completed successfully.");
+        } else if (ReturnCode.isCancel(returnCode)) {
+          print("FFmpeg process cancelled by user.");
+        } else {
+          print("FFmpeg process failed with return code $returnCode.");
+        }
         await recorderController.record(path: path);
 
         /// refresh state for changes on page to reflect
