@@ -1,4 +1,7 @@
 import 'dart:io';
+import 'package:ffmpeg_kit_flutter/ffmpeg_kit.dart';
+import 'package:ffmpeg_kit_flutter/log.dart';
+import 'package:ffmpeg_kit_flutter/return_code.dart';
 import 'package:flutter/foundation.dart';
 import 'dart:math';
 import 'package:audio_waveforms/audio_waveforms.dart';
@@ -7,9 +10,6 @@ import 'package:mboathoscope/controller/appDirectorySingleton.dart';
 import 'package:mboathoscope/controller/helpers.dart';
 import 'package:mboathoscope/views/widgets/alert_dialog_model.dart';
 import 'package:simple_ripple_animation/simple_ripple_animation.dart';
-import 'package:ffmpeg_kit_flutter_full_gpl/ffmpeg_kit.dart';
-import 'package:ffmpeg_kit_flutter_full_gpl/log.dart';
-import 'package:ffmpeg_kit_flutter_full_gpl/return_code.dart';
 
 class headerHalf extends StatefulWidget {
   const headerHalf({Key? key}) : super(key: key);
