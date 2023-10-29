@@ -1,4 +1,7 @@
 import 'dart:io';
+import 'package:ffmpeg_kit_flutter/ffmpeg_kit.dart';
+import 'package:ffmpeg_kit_flutter/log.dart';
+import 'package:ffmpeg_kit_flutter/return_code.dart';
 import 'package:flutter/foundation.dart';
 import 'dart:math';
 import 'package:audio_waveforms/audio_waveforms.dart';
@@ -7,9 +10,6 @@ import 'package:mboathoscope/controller/appDirectorySingleton.dart';
 import 'package:mboathoscope/controller/helpers.dart';
 import 'package:mboathoscope/views/widgets/alert_dialog_model.dart';
 import 'package:simple_ripple_animation/simple_ripple_animation.dart';
-import 'package:ffmpeg_kit_flutter_full_gpl/ffmpeg_kit.dart';
-import 'package:ffmpeg_kit_flutter_full_gpl/log.dart';
-import 'package:ffmpeg_kit_flutter_full_gpl/return_code.dart';
 
 class headerHalf extends StatefulWidget {
   const headerHalf({Key? key}) : super(key: key);
@@ -159,7 +159,16 @@ class _headerHalfState extends State<headerHalf> {
         "${appDirectory.path}/$heartBeatFileFolderPath${DateTime
             .now()
             .millisecondsSinceEpoch}.mpeg4";
-
+        final denoiseCommand = "-i $path -af nlmeans $path";
+        final session = await FFmpegKit.executeAsync(denoiseCommand);
+        final returnCode = await session.getReturnCode();
+        if (ReturnCode.isSuccess(returnCode)) {
+          print("FFmpeg process completed successfully.");
+        } else if (ReturnCode.isCancel(returnCode)) {
+          print("FFmpeg process cancelled by user.");
+        } else {
+          print("FFmpeg process failed with return code $returnCode.");
+        }
         await recorderController.record(path: path);
 
         /// refresh state for changes on page to reflect

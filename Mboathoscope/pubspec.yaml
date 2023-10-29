@@ -57,6 +57,7 @@ dependencies:
   firebase_auth: ^4.8.0
   record: ^5.0.1
   audioplayers: ^5.2.0
+  ffmpeg_kit_flutter:
 
 
 
