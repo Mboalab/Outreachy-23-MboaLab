@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:mboathoscope/utils/shared_preference.dart';
+import 'package:mboathoscope/views/LoginPage.dart';
 import '../models/User.dart';
 
 class ProfilePage extends StatelessWidget {
@@ -256,12 +257,9 @@ class ProfilePage extends StatelessWidget {
                 ElevatedButton(
                   onPressed: () async {
                     await SharedPreference.removeUserDetails();
-                    FirebaseAuth.instance.signOut().then((value) {
-                      Navigator.of(context)
-                          .popUntil(ModalRoute.withName("/login"));
-                    }).catchError((error) {
-                      debugPrint(error.toString());
-                    });
+                    await FirebaseAuth.instance.signOut();
+                    Navigator.of(context)
+                        .pushNamedAndRemoveUntil('/login', (route) => false);
                   },
                   style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all(Colors.grey),

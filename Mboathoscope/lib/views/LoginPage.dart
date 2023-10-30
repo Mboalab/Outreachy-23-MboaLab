@@ -5,6 +5,7 @@ import 'package:mboathoscope/utils/shared_preference.dart';
 import 'package:mboathoscope/views/RegisterPage.dart';
 import 'package:lottie/lottie.dart';
 import 'package:mboathoscope/views/RolePage.dart';
+import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import '../models/User.dart';
 import 'package:cloud_firestore/cloud_firestore.dart' as cft;
 
@@ -27,6 +28,7 @@ class _LoginPageState extends State<LoginPage> {
   String emailErrorText = "";
   String passwordErrorText = "";
   FirebaseAuth _auth = FirebaseAuth.instance;
+  bool isLoading = false;
 
   // signInWithPhone()async{
   //   await db.collection('Users').where('phoneNumber', isEqualTo: phoneNumberController.text).get().then((value){
@@ -49,6 +51,7 @@ class _LoginPageState extends State<LoginPage> {
 
   ///Authenticate user sign in with Email and Password
   signInWithEmailAndPassword() async {
+    setState(() => isLoading = true);
     if (emailController.text.isNotEmpty && passwordController.text.isNotEmpty) {
       await _auth
           .signInWithEmailAndPassword(
@@ -67,11 +70,14 @@ class _LoginPageState extends State<LoginPage> {
                 MaterialPageRoute(
                     builder: (context) => RolePage(
                         user: CustomUser.fromMap(value.docs.first.data()))));
+
             ///Save user login Details to SharedPreferences
             await SharedPreference.saveUserDetails(value.docs.first.data());
           });
+          setState(() => isLoading = false);
         }
       }).onError((error, stackTrace) {
+        setState(() => isLoading = false);
         debugPrint(error.toString());
       });
     }
@@ -232,68 +238,72 @@ class _LoginPageState extends State<LoginPage> {
       child: Scaffold(
         backgroundColor: Colors.transparent,
         body: Center(
-          child: SingleChildScrollView(
-            child: Container(
-              color: Colors.transparent,
-              child: Padding(
-                padding:
-                    EdgeInsets.fromLTRB(w * .1, h * 0.05, w * .1, h * 0.01),
-                child: Form(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      SizedBox(
-                        height: h * .1,
-                        child: Text(
-                          'Login',
-                          style: TextStyle(
-                            color: Color(0xff3D79FD),
-                            fontWeight: FontWeight.bold,
-                            fontSize: h * .05,
+          child: ModalProgressHUD(
+            inAsyncCall: isLoading,
+            child: SingleChildScrollView(
+              child: Container(
+                color: Colors.transparent,
+                child: Padding(
+                  padding:
+                      EdgeInsets.fromLTRB(w * .1, h * 0.05, w * .1, h * 0.01),
+                  child: Form(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          height: h * .1,
+                          child: Text(
+                            'Login',
+                            style: TextStyle(
+                              color: Color(0xff3D79FD),
+                              fontWeight: FontWeight.bold,
+                              fontSize: h * .05,
+                            ),
                           ),
                         ),
-                      ),
-                      SizedBox(height: h * .02),
-                      Container(
-                        height: h * .4,
-                        width: w * .8,
-                        child: Lottie.asset(
-                            'assets/animations/LoginPageAnimation.json'),
-                      ),
-                      SizedBox(height: h * .05),
-                      emailField,
-                      passwordField,
-                      loginButton,
-                      SizedBox(height: h * .04),
-                      Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Text(
-                              "Don't have an account? ",
-                              style: TextStyle(
-                                color: Colors.blueGrey,
-                                fontSize: h * .025,
-                              ),
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => RegisterPage()));
-                              },
-                              child: Text(
-                                "Register",
+                        SizedBox(height: h * .02),
+                        Container(
+                          height: h * .4,
+                          width: w * .8,
+                          child: Lottie.asset(
+                              'assets/animations/LoginPageAnimation.json'),
+                        ),
+                        SizedBox(height: h * .05),
+                        emailField,
+                        passwordField,
+                        loginButton,
+                        SizedBox(height: h * .04),
+                        Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Text(
+                                "Don't have an account? ",
                                 style: TextStyle(
-                                  color: Color(0xff3D79FD),
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: h * .022,
+                                  color: Colors.blueGrey,
+                                  fontSize: h * .025,
                                 ),
                               ),
-                            )
-                          ])
-                    ],
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              RegisterPage()));
+                                },
+                                child: Text(
+                                  "Register",
+                                  style: TextStyle(
+                                    color: Color(0xff3D79FD),
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: h * .022,
+                                  ),
+                                ),
+                              )
+                            ])
+                      ],
+                    ),
                   ),
                 ),
               ),
