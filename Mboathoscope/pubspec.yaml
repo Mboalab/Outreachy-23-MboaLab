@@ -58,8 +58,7 @@ dependencies:
   record: ^5.0.1
   audioplayers: ^5.2.0
   ffmpeg_kit_flutter:
-
-
+  shared_preferences: ^2.2.2
 
 
 dev_dependencies:
