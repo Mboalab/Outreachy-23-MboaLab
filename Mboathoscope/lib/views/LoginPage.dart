@@ -1,13 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:mboathoscope/controller/helpers.dart';
+import 'package:mboathoscope/utils/shared_preference.dart';
 import 'package:mboathoscope/views/RegisterPage.dart';
 import 'package:lottie/lottie.dart';
 import 'package:mboathoscope/views/RolePage.dart';
 import '../models/User.dart';
 import 'package:cloud_firestore/cloud_firestore.dart' as cft;
-
-
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -29,8 +28,6 @@ class _LoginPageState extends State<LoginPage> {
   String passwordErrorText = "";
   FirebaseAuth _auth = FirebaseAuth.instance;
 
-
-
   // signInWithPhone()async{
   //   await db.collection('Users').where('phoneNumber', isEqualTo: phoneNumberController.text).get().then((value){
   //     if(value.docs.length==0){
@@ -50,27 +47,35 @@ class _LoginPageState extends State<LoginPage> {
   //   });
   // }
 
-
   ///Authenticate user sign in with Email and Password
-  signInWithEmailAndPassword()async{
-    if(emailController.text.isNotEmpty && passwordController.text.isNotEmpty) {
-      await _auth.signInWithEmailAndPassword(email: emailController.text,
-          password: passwordController.text).then((value){
-            if(value.user!=null){
-              ///fetch user details from db
-              db.collection("Users").where('email', isEqualTo: value.user!.email).get().then((value){
-                ///
-                Navigator.push(context, MaterialPageRoute(builder: (context) =>
-                    RolePage(user: CustomUser.fromMap(value.docs.first.data()))));
-              });
-            }
-
-      }).onError((error, stackTrace){
+  signInWithEmailAndPassword() async {
+    if (emailController.text.isNotEmpty && passwordController.text.isNotEmpty) {
+      await _auth
+          .signInWithEmailAndPassword(
+              email: emailController.text, password: passwordController.text)
+          .then((value) {
+        if (value.user != null) {
+          ///fetch user details from db
+          db
+              .collection("Users")
+              .where('email', isEqualTo: value.user!.email)
+              .get()
+              .then((value) async {
+            ///
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => RolePage(
+                        user: CustomUser.fromMap(value.docs.first.data()))));
+            ///Save user login Details to SharedPreferences
+            await SharedPreference.saveUserDetails(value.docs.first.data());
+          });
+        }
+      }).onError((error, stackTrace) {
         debugPrint(error.toString());
       });
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -121,20 +126,20 @@ class _LoginPageState extends State<LoginPage> {
         autofocus: false,
         controller: emailController,
         keyboardType: TextInputType.emailAddress,
-
         validator: (value) {
-          if(value!.isEmpty){
+          if (value!.isEmpty) {
             return 'this field can\'t be empty';
-          }else if(RegExp(r"^[a-zA-Z\d.a-zA-Z\d.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z\d]+\.[a-zA-Z] +").hasMatch(value)){
+          } else if (RegExp(
+                  r"^[a-zA-Z\d.a-zA-Z\d.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z\d]+\.[a-zA-Z] +")
+              .hasMatch(value)) {
             return "incorrect email format";
-          }else if(!value.contains('@')){
+          } else if (!value.contains('@')) {
             return "invalid email format";
-          }else if(emailErrorExist){
+          } else if (emailErrorExist) {
             return emailErrorText;
           }
           return null;
         },
-
         onSaved: (value) {
           emailController.text = value!;
         },
@@ -149,7 +154,6 @@ class _LoginPageState extends State<LoginPage> {
           hintText: "Email",
           hintStyle: const TextStyle(fontSize: 18.0, color: Colors.white70),
           border: InputBorder.none,
-
         ));
 
     final passwordField = TextFormField(
@@ -157,13 +161,12 @@ class _LoginPageState extends State<LoginPage> {
         controller: passwordController,
         keyboardType: TextInputType.visiblePassword,
         obscureText: true,
-
         validator: (value) {
-          if(value!.isEmpty){
+          if (value!.isEmpty) {
             return "Password cannot be empty";
-          }else if(!helpers().isPasswordCompliant(value)){
+          } else if (!helpers().isPasswordCompliant(value)) {
             return "Password must be at least 8 character long";
-          }else if(passwordErrorExist){
+          } else if (passwordErrorExist) {
             return passwordErrorText;
           }
           return null;
@@ -182,7 +185,6 @@ class _LoginPageState extends State<LoginPage> {
           hintText: "Password",
           hintStyle: const TextStyle(fontSize: 18.0, color: Colors.white70),
           border: InputBorder.none,
-
         ));
 
     final loginButton = Material(
@@ -200,14 +202,14 @@ class _LoginPageState extends State<LoginPage> {
         child: MaterialButton(
             padding: EdgeInsets.fromLTRB(w * .1, h * 0.015, w * .1, h * 0.015),
             minWidth: MediaQuery.of(context).size.width,
-            onPressed: () async{
+            onPressed: () async {
               ///deactivate all error messages
               errorText = "";
               accountNotRegistered = false;
-              emailErrorText="";
-              passwordErrorText="";
-              emailErrorExist=false;
-              passwordErrorExist=false;
+              emailErrorText = "";
+              passwordErrorText = "";
+              emailErrorExist = false;
+              passwordErrorExist = false;
 
               ///Signin with email and Password
               signInWithEmailAndPassword();
@@ -224,7 +226,9 @@ class _LoginPageState extends State<LoginPage> {
     );
 
     return Container(
-      decoration: const BoxDecoration(color: const Color(0xffF3F7FF),),
+      decoration: const BoxDecoration(
+        color: const Color(0xffF3F7FF),
+      ),
       child: Scaffold(
         backgroundColor: Colors.transparent,
         body: Center(
@@ -254,7 +258,8 @@ class _LoginPageState extends State<LoginPage> {
                       Container(
                         height: h * .4,
                         width: w * .8,
-                        child: Lottie.asset('assets/animations/LoginPageAnimation.json'),
+                        child: Lottie.asset(
+                            'assets/animations/LoginPageAnimation.json'),
                       ),
                       SizedBox(height: h * .05),
                       emailField,
@@ -299,4 +304,3 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 }
-
