@@ -59,6 +59,8 @@ dependencies:
   audioplayers: ^5.2.0
   ffmpeg_kit_flutter:
   shared_preferences: ^2.2.2
+  modal_progress_hud_nsn: ^0.4.0
+
 
 
 dev_dependencies:
