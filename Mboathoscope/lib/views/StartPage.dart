@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:mboathoscope/utils/shared_preference.dart';
 import 'package:mboathoscope/views/buttons/CustomButton.dart';
 
@@ -76,10 +77,10 @@ class _StartPageState extends State<StartPage> {
                       onTap: () {
                         Navigator.pushNamed(context, '/login');
                       },
-                      child: const Padding(
+                      child: Padding(
                         padding: EdgeInsets.only(bottom: 199),
                         child: CustomButton(
-                          txt: 'Get Started',
+                          txt: 'GetStarted'.tr,
                         ),
                       ),
                     )

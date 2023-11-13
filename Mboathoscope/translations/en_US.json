@@ -1,0 +1,37 @@
+[
+  {
+    "ResourceKey": "Login",
+    "ResourceValue": "Login",
+    "LanguageId": 1
+  },
+
+  {
+    "ResourceKey": "NoAccount",
+    "ResourceValue": "Don't have an account? ",
+    "LanguageId": 1
+
+  },
+  {
+    "ResourceKey": "Register",
+    "ResourceValue": "Register",
+    "LanguageId": 1
+
+  },
+  {
+    "ResourceKey": "Password",
+    "ResourceValue": "Password",
+    "LanguageId": 1
+
+  },
+  {
+    "ResourceKey": "Email",
+    "ResourceValue": "Email",
+    "LanguageId": 1
+
+  },
+  {
+    "ResourceKey": "GetStarted",
+    "ResourceValue": "Get Started",
+    "LanguageId": 1
+  }
+]
