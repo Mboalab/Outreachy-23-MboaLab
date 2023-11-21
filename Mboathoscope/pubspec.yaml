@@ -60,6 +60,7 @@ dependencies:
   ffmpeg_kit_flutter:
   shared_preferences: ^2.2.2
   modal_progress_hud_nsn: ^0.4.0
+  get: ^4.6.6
 
 
 
@@ -93,6 +94,7 @@ flutter:
   assets:
     - assets/images/
     - assets/animations/
+    - translations/
     
     # - assets/images/img.png
     # - assets/images/img_role.png

@@ -1,13 +1,15 @@
+import 'package:cloud_firestore/cloud_firestore.dart' as cft;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:lottie/lottie.dart';
 import 'package:mboathoscope/controller/helpers.dart';
 import 'package:mboathoscope/utils/shared_preference.dart';
 import 'package:mboathoscope/views/RegisterPage.dart';
-import 'package:lottie/lottie.dart';
 import 'package:mboathoscope/views/RolePage.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
+
 import '../models/User.dart';
-import 'package:cloud_firestore/cloud_firestore.dart' as cft;
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -157,7 +159,7 @@ class _LoginPageState extends State<LoginPage> {
               borderSide: BorderSide(color: Colors.white60)),
           errorStyle: const TextStyle(color: Colors.red),
           errorText: errorText,
-          hintText: "Email",
+          hintText: "Email".tr,
           hintStyle: const TextStyle(fontSize: 18.0, color: Colors.white70),
           border: InputBorder.none,
         ));
@@ -188,7 +190,7 @@ class _LoginPageState extends State<LoginPage> {
               borderSide: BorderSide(color: Colors.white60)),
           errorStyle: const TextStyle(color: Colors.red),
           errorText: passwordErrorText,
-          hintText: "Password",
+          hintText: "Password".tr,
           hintStyle: const TextStyle(fontSize: 18.0, color: Colors.white70),
           border: InputBorder.none,
         ));
@@ -221,7 +223,7 @@ class _LoginPageState extends State<LoginPage> {
               signInWithEmailAndPassword();
             },
             child: Text(
-              "Login",
+              "Login".tr,
               textAlign: TextAlign.center,
               style: TextStyle(
                   fontSize: 20,
@@ -254,7 +256,7 @@ class _LoginPageState extends State<LoginPage> {
                         SizedBox(
                           height: h * .1,
                           child: Text(
-                            'Login',
+                            'Login'.tr,
                             style: TextStyle(
                               color: Color(0xff3D79FD),
                               fontWeight: FontWeight.bold,
@@ -278,10 +280,10 @@ class _LoginPageState extends State<LoginPage> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
                               Text(
-                                "Don't have an account? ",
+                                "NoAccount".tr,
                                 style: TextStyle(
                                   color: Colors.blueGrey,
-                                  fontSize: h * .025,
+                                  fontSize: h * .021,
                                 ),
                               ),
                               GestureDetector(
@@ -293,7 +295,7 @@ class _LoginPageState extends State<LoginPage> {
                                               RegisterPage()));
                                 },
                                 child: Text(
-                                  "Register",
+                                  "Register".tr,
                                   style: TextStyle(
                                     color: Color(0xff3D79FD),
                                     fontWeight: FontWeight.bold,
