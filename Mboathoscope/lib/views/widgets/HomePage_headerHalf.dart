@@ -10,6 +10,7 @@ import 'package:mboathoscope/controller/appDirectorySingleton.dart';
 import 'package:mboathoscope/controller/helpers.dart';
 import 'package:mboathoscope/views/widgets/alert_dialog_model.dart';
 import 'package:simple_ripple_animation/simple_ripple_animation.dart';
+import 'package:lottie/lottie.dart';
 
 class headerHalf extends StatefulWidget {
   const headerHalf({Key? key}) : super(key: key);
@@ -46,6 +47,22 @@ class _headerHalfState extends State<headerHalf> {
       ..sampleRate = 16000;
   }
 
+  Widget heartLines() {
+    if (isRecording) {
+      return SafeArea(
+
+        child: Lottie.asset(
+            'assets/animations/lines.json'),
+      );
+    }
+    else {
+      return SafeArea(
+
+        child: Lottie.asset(
+            'assets/animations/Sline.json'),
+      );
+    }
+  }
   ///
   Widget recordBody() {
     if (isRecording) {
@@ -218,12 +235,16 @@ class _headerHalfState extends State<headerHalf> {
 
   @override
   Widget build(BuildContext context) {
+    var w = MediaQuery.of(context).size.width;
+    var h = MediaQuery.of(context).size.height;
     return Column(
       children: [
+
         Padding(
           padding: const EdgeInsets.only(top: 34.0, left: 20, right: 30),
           child: Row(
             children: <Widget>[
+
 
               Expanded(
                 flex: 5,
@@ -270,17 +291,32 @@ class _headerHalfState extends State<headerHalf> {
           ),
         ),
 
-        const SizedBox(
-          height: 20,
+        Padding(
+            padding: const EdgeInsets.only(
+              right: 0,
+              left: 10,
+              top: 0,
+              bottom: 0,
+            ),
+            child : Row (
+              children:   [Container(
+                height: h * .4,
+                width: w * .9,
+                child: heartLines(),
+              ),
+              ],
+            )
         ),
+
 
         Padding(
           padding: const EdgeInsets.only(
             right: 8.0,
             left: 8.0,
-            top: 20.0,
-            bottom: 20.0,
+            top: 0.0,
+            bottom: 0.0,
           ),
+
 
           child: Row(
             children: <Widget>[
@@ -367,25 +403,14 @@ class _headerHalfState extends State<headerHalf> {
           ),
         ),
 
-        Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: const [
-            Padding(
-              padding: EdgeInsets.only(left: 18.0, top: 17.0),
-              child: Text(
-                'Recordings',
-                textAlign: TextAlign.right,
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ],
-        ),
+
       ],
     );
 
   }
-
 }
+
+
+
+
+

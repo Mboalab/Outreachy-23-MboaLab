@@ -37,13 +37,15 @@ class _HomePageState extends State<HomePage> {
   List<Widget> widgetList() {
     return [
       ///navigation bottom 0
-      Column(
-        children: const [headerHalf(), RecordingList()],
+      Container(
+        child: const headerHalf(),
       ),
       // MyRecorderApp(),
 
       ///navigation bottom 1
-      Container(),
+      Container(
+        child: const RecordingList(),
+      ),
 
       ///navigation bottom 2
       Container(),

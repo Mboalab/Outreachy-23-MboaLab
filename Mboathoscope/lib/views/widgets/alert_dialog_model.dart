@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:flutter/material.dart';
 import 'package:mboathoscope/controller/appDirectorySingleton.dart';
+import 'package:mboathoscope/views/widgets/result.dart';
 import 'package:path/path.dart' as p;
 
 class DialogUtils {
@@ -15,12 +16,12 @@ class DialogUtils {
       AppDirectorySingleton.heartBeatParentPath;
 
   static void showCustomDialog(
-    BuildContext context, {
-    required String title,
-    String deleteBtnText = "Delete",
-    String saveBtnText = "Save",
-    required String path,
-  }) {
+      BuildContext context, {
+        required String title,
+        String deleteBtnText = "Delete",
+        String saveBtnText = "Save",
+        required String path,
+      }) {
     ///
     TextEditingController textEditingController = TextEditingController();
 
@@ -42,23 +43,23 @@ class DialogUtils {
                       controller: textEditingController,
 
                       decoration: InputDecoration(
-                          labelText: 'Enter Recording Name',
+                        labelText: 'Enter Recording Name',
 
-                          enabledBorder: OutlineInputBorder(
-                            borderSide:
-                                const BorderSide(width: 1, color:  Colors.blueAccent,),
-                            borderRadius: BorderRadius.circular(15),
-                          ),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide:
+                          const BorderSide(width: 1, color:  Colors.blueAccent,),
+                          borderRadius: BorderRadius.circular(15),
+                        ),
 
-                          focusedBorder: OutlineInputBorder(
-                            borderSide:
-                                const BorderSide(width: 1, color: Colors.blueAccent,),
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          
-                          border: InputBorder.none,
-                          // hintText: 'Enter here',
-                          ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide:
+                          const BorderSide(width: 1, color: Colors.blueAccent,),
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+
+                        border: InputBorder.none,
+                        // hintText: 'Enter here',
+                      ),
                     ),
                     const SizedBox(
                       height: 15,
@@ -71,7 +72,7 @@ class DialogUtils {
                           child: TextButton(
                             onPressed: () async {
                               PlayerController tempHeartBeatPlayerController =
-                                  PlayerController();
+                              PlayerController();
 
                               ///
                               await tempHeartBeatPlayerController.preparePlayer(
@@ -84,7 +85,7 @@ class DialogUtils {
                               if (textEditingController.text.isNotEmpty) {
                                 final file = File(path); // Your file path
                                 String dir =
-                                    p.dirname(file.path); // Get directory
+                                p.dirname(file.path); // Get directory
                                 String newPath = p.join(
                                     dir, textEditingController.text); // Rename
                                 file.renameSync(newPath);
@@ -106,15 +107,24 @@ class DialogUtils {
                               AppDirectorySingleton().addToHeartBeatAndPathMap(
                                   path, tempHeartBeatPlayerController);
 
-                              Navigator.pop(context);
+                              // Navigator.pop(context);
                             },
                             //color: const Color(0xFF1BC0C5),
-                            child: const Text(
+                            child: GestureDetector(
+                                child: const Text('Save and See Results'),
+                                onTap: () {
+                                  Navigator.pushNamed(context, '/Result');
+                                }
+                            ),
+
+                          ),
+
+                          /* Text(
                               "Save",
                               // style: TextStyle(color: Colors.white),
-                            ),
-                          ),
+                            ),*/
                         ),
+
                         SizedBox(
                           child: TextButton(
                             onPressed: () {
@@ -127,7 +137,7 @@ class DialogUtils {
                                   .deletesRecording(path);
 
                               ///
-                              Navigator.pop(context);
+                              //Navigator.pop(context);
                             },
                             //color: const Color(0xFF1BC0C5),
                             child: const Text(

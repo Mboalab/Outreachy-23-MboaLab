@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="NONE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="105bdd7d-2dcb-40d0-987c-fe67eeac9715" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/Outreachy-23-MboaLab.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Dart_SDK.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Mboathoscope/assets/animations/Sline.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Mboathoscope/assets/animations/doc.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Mboathoscope/assets/animations/lines.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Mboathoscope/lib/views/widgets/result.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Mboathoscope/lib/views/widgets/resultChild.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Mboathoscope/android/app/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/Mboathoscope/android/app/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Mboathoscope/lib/main.dart" beforeDir="false" afterPath="$PROJECT_DIR$/Mboathoscope/lib/main.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Mboathoscope/lib/views/HomePage.dart" beforeDir="false" afterPath="$PROJECT_DIR$/Mboathoscope/lib/views/HomePage.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Mboathoscope/lib/views/StartPage.dart" beforeDir="false" afterPath="$PROJECT_DIR$/Mboathoscope/lib/views/StartPage.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Mboathoscope/lib/views/widgets/HomePage_headerHalf.dart" beforeDir="false" afterPath="$PROJECT_DIR$/Mboathoscope/lib/views/widgets/HomePage_headerHalf.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Mboathoscope/lib/views/widgets/RecordingList.dart" beforeDir="false" afterPath="$PROJECT_DIR$/Mboathoscope/lib/views/widgets/RecordingList.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Mboathoscope/lib/views/widgets/alert_dialog_model.dart" beforeDir="false" afterPath="$PROJECT_DIR$/Mboathoscope/lib/views/widgets/alert_dialog_model.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Mboathoscope/pubspec.lock" beforeDir="false" afterPath="$PROJECT_DIR$/Mboathoscope/pubspec.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Mboathoscope/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/Mboathoscope/pubspec.yaml" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Dart File" />
+      </list>
+    </option>
+  </component>
+  <component name="GenerateSignedApkSettings">
+    <option name="BUILD_TARGET_KEY" value="apk" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectId" id="2ZOR0w9VjJxZZRITTr6jn8cktQk" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "ApkExportedModule": "Outreachy-23-MboaLab",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.cidr.known.project.marker": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "cidr.known.project.marker": "true",
+    "dart.analysis.tool.window.visible": "false",
+    "io.flutter.reload.alreadyRun": "true",
+    "last_opened_file_path": "E:/digital sthethoscope/Outreachy-23-MboaLab/Mboathoscope/assets/animations",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "flutter.settings",
+    "show.migrate.to.gradle.popup": "false"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="E:\digital sthethoscope\Outreachy-23-MboaLab\Mboathoscope\assets\animations" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="E:\digital sthethoscope\Outreachy-23-MboaLab\Machine-Learning\Notebook" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration default="true" type="AndroidRunConfigurationType" factoryName="Android App">
+      <module name="Outreachy-23-MboaLab" />
+      <option name="DEPLOY" value="true" />
+      <option name="DEPLOY_APK_FROM_BUNDLE" value="false" />
+      <option name="DEPLOY_AS_INSTANT" value="false" />
+      <option name="ARTIFACT_NAME" value="" />
+      <option name="PM_INSTALL_OPTIONS" value="" />
+      <option name="ALL_USERS" value="false" />
+      <option name="ALWAYS_INSTALL_WITH_PM" value="false" />
+      <option name="CLEAR_APP_STORAGE" value="false" />
+      <option name="DYNAMIC_FEATURES_DISABLED_LIST" value="" />
+      <option name="ACTIVITY_EXTRA_FLAGS" value="" />
+      <option name="MODE" value="default_activity" />
+      <option name="CLEAR_LOGCAT" value="false" />
+      <option name="SHOW_LOGCAT_AUTOMATICALLY" value="false" />
+      <option name="INSPECTION_WITHOUT_ACTIVITY_RESTART" value="false" />
+      <option name="TARGET_SELECTION_MODE" value="SHOW_DIALOG" />
+      <option name="SELECTED_CLOUD_MATRIX_CONFIGURATION_ID" value="-1" />
+      <option name="SELECTED_CLOUD_MATRIX_PROJECT_ID" value="" />
+      <option name="DEBUGGER_TYPE" value="Auto" />
+      <Auto>
+        <option name="USE_JAVA_AWARE_DEBUGGER" value="false" />
+        <option name="SHOW_STATIC_VARS" value="true" />
+        <option name="WORKING_DIR" value="" />
+        <option name="TARGET_LOGGING_CHANNELS" value="lldb process:gdb-remote packets" />
+        <option name="SHOW_OPTIMIZED_WARNING" value="true" />
+      </Auto>
+      <Hybrid>
+        <option name="USE_JAVA_AWARE_DEBUGGER" value="false" />
+        <option name="SHOW_STATIC_VARS" value="true" />
+        <option name="WORKING_DIR" value="" />
+        <option name="TARGET_LOGGING_CHANNELS" value="lldb process:gdb-remote packets" />
+        <option name="SHOW_OPTIMIZED_WARNING" value="true" />
+      </Hybrid>
+      <Java />
+      <Native>
+        <option name="USE_JAVA_AWARE_DEBUGGER" value="false" />
+        <option name="SHOW_STATIC_VARS" value="true" />
+        <option name="WORKING_DIR" value="" />
+        <option name="TARGET_LOGGING_CHANNELS" value="lldb process:gdb-remote packets" />
+        <option name="SHOW_OPTIMIZED_WARNING" value="true" />
+      </Native>
+      <Profilers>
+        <option name="ADVANCED_PROFILING_ENABLED" value="false" />
+        <option name="STARTUP_PROFILING_ENABLED" value="false" />
+        <option name="STARTUP_CPU_PROFILING_ENABLED" value="false" />
+        <option name="STARTUP_CPU_PROFILING_CONFIGURATION_NAME" value="Java/Kotlin Method Sample (legacy)" />
+        <option name="STARTUP_NATIVE_MEMORY_PROFILING_ENABLED" value="false" />
+        <option name="NATIVE_MEMORY_SAMPLE_RATE_BYTES" value="2048" />
+      </Profilers>
+      <option name="DEEP_LINK" value="" />
+      <option name="ACTIVITY_CLASS" value="" />
+      <option name="SEARCH_ACTIVITY_IN_GLOBAL_SCOPE" value="false" />
+      <option name="SKIP_ACTIVITY_VALIDATION" value="false" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Unnamed" type="FlutterRunConfigurationType" factoryName="Flutter" nameIsGenerated="true">
+      <option name="filePath" value="$PROJECT_DIR$/Mboathoscope/lib/main.dart" />
+      <method v="2" />
+    </configuration>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="105bdd7d-2dcb-40d0-987c-fe67eeac9715" name="Changes" comment="" />
+      <created>1702290919685</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1702290919685</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="UnknownFeatures">
+    <option featureType="com.intellij.fileTypeFactory" implementationName="*.ipynb" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="Dart">
+          <url>file://$PROJECT_DIR$/Mboathoscope/lib/views/widgets/HomePage_headerHalf.dart</url>
+          <line>291</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+</project>

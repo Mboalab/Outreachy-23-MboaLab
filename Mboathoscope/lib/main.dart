@@ -7,6 +7,8 @@ import 'package:mboathoscope/views/LoginPage.dart';
 import 'package:mboathoscope/views/RolePage.dart';
 import 'package:mboathoscope/views/StartPage.dart';
 import 'package:mboathoscope/views/homePage.dart';
+import 'package:mboathoscope/views/widgets/result.dart';
+import 'package:path/path.dart';
 import 'package:provider/provider.dart' as provider;
 
 import 'models/User.dart';
@@ -37,7 +39,7 @@ void main() async {
       initialRoute: '/',
       routes: {
         '': (context) => const StartPage(),
-        '/rolepage': (context) => RolePage(
+        /* '/rolepage': (context) => RolePage(
               user: CustomUser(
                   uid: '',
                   fullName: "",
@@ -46,16 +48,17 @@ void main() async {
                   gender: '',
                   email: ''),
             ),
-        '/login': (context) => const LoginPage(),
+        '/login': (context) => const LoginPage(),*/
+        '/Result': (context) =>  ResultPage(),
         '/homepage': (context) => HomePage(
-              user: CustomUser(
-                  uid: '',
-                  fullName: "",
-                  phoneNumber: '',
-                  age: '',
-                  gender: '',
-                  email: ''),
-            ),
+          user: CustomUser(
+              uid: '',
+              fullName: "",
+              phoneNumber: '',
+              age: '',
+              gender: '',
+              email: ''),
+        ),
       },
     ),
   ));
