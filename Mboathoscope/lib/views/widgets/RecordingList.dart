@@ -35,61 +35,82 @@ class _RecordingListState extends State<RecordingList> {
     // final listOfRecordings = ref.read(RecordingListProvider);
     return Consumer<AppDirectorySingleton>(
 
-      builder: (BuildContext context, value, Widget? child) {
-     
-      listOfRecordings.clear();
-          
-      value.heartbeatAndPathMap.forEach((key, value) {
+        builder: (BuildContext context, value, Widget? child) {
 
-        Recording rec1 = Recording(
-          id: key,
-          pathname: key,
-          filename: helpers().getFileBaseName(File(key)),
-          dateTime: DateTime.now(),
-          playerController: value,
-        );
-        listOfRecordings.add(rec1);
-        // listOfRecordings.add(rec1);
-      });
+          listOfRecordings.clear();
 
-      return Container(
-        child: listOfRecordings.isEmpty
-            ? const SizedBox(
-                height: 50,
+          value.heartbeatAndPathMap.forEach((key, value) {
+
+            Recording rec1 = Recording(
+              id: key,
+              pathname: key,
+              filename: helpers().getFileBaseName(File(key)),
+              dateTime: DateTime.now(),
+              playerController: value,
+            );
+            listOfRecordings.add(rec1);
+            // listOfRecordings.add(rec1);
+          });
+
+          return
+            Container(
+              child: listOfRecordings.isEmpty
+                  ? const SizedBox(
+                height: 100,
                 child: Center(
                   child: Text('No recordings yet'),
                 ),
               )
-            : SingleChildScrollView(
-                child: SizedBox(
-                  height: 230,
-                  width: 390,
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: listOfRecordings.length,
-                    itemBuilder: (context, index) {
-                      //final item = items[index];
-                      return ListTile(
-                        title: Row(
-                          children: <Widget>[
-                            Expanded(
-                              flex: 20,
-                              child: WaveformButton(
-                                  playerController:listOfRecordings[index].playerController,
-                                  fileName:listOfRecordings[index].filename,
-                                  path: listOfRecordings[index].pathname,
-                              ),
-                            ),
-                          ],
-                        ),
-                        // subtitle: Text(listOfRecordings[index].filename),
-                      );
-                    },
+
+                  :
+              Column(
+
+                children: [
+                  const SizedBox(
+                    height: 100,
                   ),
-                ),
+                  const Text(
+                    'Press and hold sound',
+
+                    style: TextStyle(
+                      fontSize: 20,
+                    ),
+                  ),
+                  SingleChildScrollView(
+
+
+                    child: SizedBox(
+                      height: 900,
+                      width: 390,
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: listOfRecordings.length,
+                        itemBuilder: (context, index) {
+                          //final item = items[index];r®
+                          return ListTile(
+                            title: Row(
+                              children: <Widget>[
+                                Expanded(
+                                  flex: 20,
+                                  child: WaveformButton(
+                                    playerController:listOfRecordings[index].playerController,
+                                    fileName:listOfRecordings[index].filename,
+                                    path: listOfRecordings[index].pathname,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            // subtitle: Text(listOfRecordings[index].filename),
+
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                ],
               ),
-      );
-    });
+            );
+        });
 
     // return SizedBox(
     //   height: 230,
