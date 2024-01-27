@@ -9,35 +9,59 @@ import 'package:flutter/material.dart';
 import 'package:mboathoscope/controller/appDirectorySingleton.dart';
 import 'package:mboathoscope/controller/helpers.dart';
 import 'package:mboathoscope/views/widgets/alert_dialog_model.dart';
+import 'package:mboathoscope/views/widgets/result.dart';
+//import 'package:mboathoscope/views/widgets/result.dart';
 import 'package:simple_ripple_animation/simple_ripple_animation.dart';
 import 'package:lottie/lottie.dart';
+import 'package:flutter_sound/flutter_sound.dart';
+import 'package:tflite_flutter/tflite_flutter.dart' as tfl;
+import 'dart:typed_data';
 
 class headerHalf extends StatefulWidget {
-  const headerHalf({Key? key}) : super(key: key);
+
+  final Function(List<dynamic>,String filePath) onPredictionComplete;
+  const headerHalf({Key? key, required this.onPredictionComplete}) : super(key: key);
 
   @override
   State<headerHalf> createState() => _headerHalfState();
 }
 
+
+
 class _headerHalfState extends State<headerHalf> {
   late final RecorderController recorderController;
   bool isRecordingCompleted = false;
+
+
+  bool _modelLoaded = false;
 
   ///for time to determine whether to save or delete
   bool isRecording = false;
 
   ///for time to determine whether to show microphone or not
   late String path;
+  late String outputPath;
+  late FlutterSoundPlayer flutterSoundPlayer;
+  late List<List<List<List<double>>>> outputFilePath2;
   static Directory appDirectory = AppDirectorySingleton().appDirectory;
   AppDirectorySingleton appDirectorySingleton = AppDirectorySingleton();
   String heartBeatFileFolderPath = AppDirectorySingleton.heartBeatParentPath;
+  late tfl.Interpreter _interpreter;
 
   @override
   void initState() {
     _initialiseController();
+    flutterSoundPlayer = FlutterSoundPlayer();
+    _loadModel();
     super.initState();
   }
 
+
+  @override
+  void dispose() {
+    flutterSoundPlayer.closePlayer();
+    super.dispose();
+  }
   ///Initializes Recorder
   void _initialiseController() {
     recorderController = RecorderController()
@@ -46,6 +70,62 @@ class _headerHalfState extends State<headerHalf> {
       ..iosEncoder = IosEncoder.kAudioFormatMPEG4AAC
       ..sampleRate = 16000;
   }
+  Future<void> _loadModel() async {
+    try {
+      _interpreter = await tfl.Interpreter.fromAsset('assets/updated_heart_model.h5.tflite');
+
+      // Check if the input shape matches the expected shape
+      var inputShape = _interpreter.getInputTensor(0).shape;
+      if (inputShape[0] != 1 || inputShape[1] != 128 || inputShape[2] != 130 || inputShape[3] != 1) {
+        print("Error: Model input shape is not as expected.");
+        _modelLoaded = false;
+      } else {
+        // Set a flag to indicate that the model has been successfully loaded
+        _modelLoaded = true;
+        print('Model loaded successfully.');
+      }
+    } catch (e) {
+      print("Error loading model: $e");
+      // Set a flag to indicate that the model failed to load
+      _modelLoaded = false;
+    }
+  }
+
+  Future<void> _predictHeartCondition(List<List<List<List<double>>>> rawData) async {
+    try {
+      // Print the shape of the input data
+      print("Input shape: ${rawData.length} x ${rawData[0].length} x ${rawData[0][0].length} x ${rawData[0][0][0].length}");
+
+      // Ensure that the model is loaded before proceeding
+      if (!_modelLoaded) {
+        print("Model not loaded yet. Waiting for initialization.");
+        await _loadModel();
+      }
+
+      if (_modelLoaded && _interpreter != null) {
+        // Debugging information
+        print("Model input shape: ${_interpreter.getInputTensor(0).shape}");
+
+        // Run the model
+        var output = List.filled(_interpreter.getOutputTensor(0).shape.reduce((a, b) => a * b), 0).reshape(_interpreter.getOutputTensor(0).shape);
+        _interpreter.run(rawData, output);
+
+        setState(() {
+          // Update _prediction with the result
+          print("Prediction 1: ${output.toString()}");
+          print("Output type home : ${output.runtimeType}");
+          widget.onPredictionComplete(output,outputPath);
+
+        });
+      } else {
+        print("Model failed to load. Prediction cannot be performed.");
+      }
+    } catch (e) {
+      print("Error loading or predicting: $e");
+    }
+  }
+
+
 
   Widget heartLines() {
     if (isRecording) {
@@ -158,11 +238,20 @@ class _headerHalfState extends State<headerHalf> {
         ///Stops recording and returns path,
         ///saves file automatically here
         recorderController.stop(false).then((value) async {
-          String outputPath = await executeFFmpegCommand(path!);
+           outputPath = await executeFFmpegCommand(path!);
+
           DialogUtils.showCustomDialog(
               context, title: 'title', path: outputPath);
-        });
+          print("Before calling convertAudioToArray");
 
+          outputFilePath2 = await convertAudioToArray(outputPath);
+          print("After calling convertAudioToArray");
+          print("Audio3DArray22222222222222222: $outputFilePath2");
+
+          // Predict heart condition after converting our decode audio array to 3D
+          await _predictHeartCondition(outputFilePath2.cast<List<List<List<double>>>>());
+
+        });
 
         ///Remove because rename and delete functions have a bug
         ///This allows UI to switch to allow user to either save or delete, also allow for rename
@@ -197,6 +286,102 @@ class _headerHalfState extends State<headerHalf> {
       debugPrint(error.toString());
     } finally {}
   }
+
+
+  /*Future<List<double>> convertAudioToArray(String audioFilePath) async {
+    try {
+      await flutterSoundPlayer.openPlayer();
+    // Replace with your audio file path
+
+      // Use dart:io to read the audio file as bytes
+      File audioFile = File(audioFilePath);
+      List<int> audioBytes = await audioFile.readAsBytes();
+
+      // Convert the list of bytes to Uint8List
+      Uint8List audioData = Uint8List.fromList(audioBytes);
+
+      // Convert Uint8List to List<double> with values normalized to the range [-1.0, 1.0]
+      List<double> floatArray = audioData.map((byte) => (byte - 128) / 128.0).toList();
+
+      // Print the List<double> (for demonstration purposes)
+      print("FloatArray: $floatArray");
+
+      // Return the List<double>
+      return floatArray;
+    } catch (e) {
+      print("Error: $e");
+      return null!;
+    } finally {
+      await flutterSoundPlayer.closePlayer();
+    }
+  }*/
+
+  Future<List<List<List<List<double>>>>> convertAudioToArray(String outputPath) async {
+    try {
+      print("Opening player...");
+      await flutterSoundPlayer.openPlayer();
+
+      // Use flutter_sound to load audio file
+      File audioFile = File(outputPath);
+      List<int> audioBytes = await audioFile.readAsBytes();
+
+      // Convert the list of bytes to Uint8List
+      Uint8List audioData = Uint8List.fromList(audioBytes);
+
+      // Set the number of channels (adjust based on your actual data)
+      int channels = 1;
+
+      // Set the default width to 130
+      int targetWidth = 130;
+
+      // Set the dimensions for height and width
+      int height = 128; // Replace with your desired height
+      int width = targetWidth;
+
+      // Set the depth (new dimension for 4D array)
+      int depth = 1;
+
+      // Create a 4D array to store the audio data
+      List<List<List<List<double>>>> audio4DArray = List.generate(
+        channels,
+            (channelIndex) => List.generate(
+            height,
+              (depthIndex) => List.generate(
+                width,
+                (heightIndex) => List.generate(
+                  depth,
+                  (widthIndex) {
+                int sampleIndex = heightIndex * width + widthIndex;
+                int byteIndex = (sampleIndex * channels + channelIndex) * 1;
+
+                // Ensure that byteIndex is within the valid range
+                if (byteIndex < audioData.length) {
+                  double normalizedValue = (audioData[byteIndex] - 128) / 128.0;
+                  return normalizedValue;
+                } else {
+                  // Handle the case where byteIndex is out of range
+                  return 0.0; // or any default value
+                }
+              },
+            ),
+          ),
+        ),
+      );
+
+      // Print the 4D array (for demonstration purposes)
+      print("Audio4DArray: $audio4DArray");
+
+      print("Returning audio4DArray...");
+      return audio4DArray;
+    } catch (e) {
+      print("Error: $e");
+      return null!;
+    } finally {
+      print("Closing player...");
+      await flutterSoundPlayer.closePlayer();
+    }
+  }
+
   Future<String> executeFFmpegCommand(String input) async {
 
     String path = '${appDirectory!.path}/${'audio_message'.substring(0, min('audio_message'.length, 100))}_${DateTime.now().millisecondsSinceEpoch.toString()}.aac';
@@ -409,8 +594,4 @@ class _headerHalfState extends State<headerHalf> {
 
   }
 }
-
-
-
-
 
