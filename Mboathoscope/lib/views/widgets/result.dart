@@ -3,34 +3,29 @@ import 'package:mboathoscope/views/widgets/resultChild.dart';
 import 'package:lottie/lottie.dart';
 
 class ResultPage extends StatelessWidget{
-  ResultPage({super.key});
-  /*  final  randomTexts = [
-      'Healthy',
-       'Chronic Obstructic pulmonary Disease',
-      'Upper Respiratory Tract Infection',
-      'Pneumonia',
-      'Bronchiectasis',
-      'other'
-    ];*/
-  final List<Map<String, String>> randomTexts = [
-    {'title': 'Healthy', 'subtitle': ' 1'},
-    {'title': 'Chronic Obstructic pulmonary Disease', 'subtitle': ' 2'},
-    {'title': 'Upper Respiratory Tract Infection', 'subtitle': ' 3'},
-    {'title': 'Pneumonia', 'subtitle': ' 4'},
-    {'title': 'Bronchiectasis', 'subtitle': ' 5'},
-    {'title': 'other', 'subtitle': ' 6'},
-    // Add more items as needed
+  final List<dynamic>? predictionResult;
+  ResultPage({Key? key, required this.predictionResult}) : super(key: key);
+  final  diseaseName = [
+    'Artifact',
+    'Extrahls',
+    'Extrastole',
+    'Murmur',
+    'Normal'
   ];
 
 
   @override
   Widget build(BuildContext context) {
+    List? flattenedData = predictionResult?.expand((element) => element).toList();
+    print("Prediction from result screen: ${predictionResult.toString()}");
+
     var w = MediaQuery.of(context).size.width;
     var h = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
         leading: BackButton(
-          onPressed: () =>   Navigator.pushNamed(context, '/homepage'),
+          onPressed: () =>      Navigator.of(context)
+              .pushNamedAndRemoveUntil('/homepage',  (Route<dynamic> route) => false),
         ),
       ),
       body: SafeArea(
@@ -72,10 +67,9 @@ class ResultPage extends StatelessWidget{
 
               shrinkWrap: true, // You won't see infinite size error
               physics: ScrollPhysics(),
-              itemCount: randomTexts.length,
+              itemCount: flattenedData?.length,
               itemBuilder: (BuildContext ctx, index) =>
-                  AddCard(randomText: randomTexts[index]['title']!
-                      , ind: randomTexts[index]['subtitle']!),
+                  AddCard(  name: diseaseName[index],predictionResult: flattenedData?[index]),
             ),
           ],
         ),

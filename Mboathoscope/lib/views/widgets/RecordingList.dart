@@ -70,7 +70,7 @@ class _RecordingListState extends State<RecordingList> {
                     height: 100,
                   ),
                   const Text(
-                    'Press and hold sound',
+                    'All Recordings',
 
                     style: TextStyle(
                       fontSize: 20,

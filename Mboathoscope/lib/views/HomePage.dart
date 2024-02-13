@@ -3,6 +3,7 @@ import 'package:mboathoscope/models/User.dart';
 import 'package:mboathoscope/views/ProfilePage.dart';
 import 'package:mboathoscope/views/widgets/RecordingList.dart';
 import 'package:mboathoscope/views/widgets/HomePage_headerHalf.dart';
+import 'package:mboathoscope/views/widgets/alert_dialog_model.dart';
 
 import '../record_implementation/recorder_main.dart';
 
@@ -38,7 +39,19 @@ class _HomePageState extends State<HomePage> {
     return [
       ///navigation bottom 0
       Container(
-        child: const headerHalf(),
+        child:  headerHalf(
+          onPredictionComplete: (result,outputPath) {
+            // Handle the prediction result, you can pass it to DialogUtils or navigate to Result page here
+            // For example:
+            DialogUtils.showCustomDialog(
+              context,
+              title: 'title',
+              path: outputPath,
+              predictionResult: result,
+            );
+            //Navigator.of(context).pop();
+          },
+        ),
       ),
       // MyRecorderApp(),
 

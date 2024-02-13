@@ -5,12 +5,22 @@ import 'package:dotted_border/dotted_border.dart';
 
 class AddCard extends StatelessWidget {
 
-  final String randomText;
-  final String ind;
 
+  final dynamic  predictionResult;
+  final String name;
 
-  AddCard({Key? key, required this.randomText, required this.ind}) : super(key: key);
+  AddCard( {Key? key, required this.predictionResult,required this.name}) : super(key: key);
+  String formatValuesAsPercentage(double value) {
 
+    double percentage = (value * 100);
+    return '${percentage.toStringAsFixed(2)}%';
+
+  }
+  /*String formatFirstValueAsPercentage() {
+    double firstValue = predictionResult[0];
+    double percentage = firstValue * 100;
+    return '${percentage.toStringAsFixed(2)}%';
+  }*/
 
 
   @override
@@ -18,6 +28,9 @@ class AddCard extends StatelessWidget {
 
 
     double squareWidth = MediaQuery.of(context).size.width;
+    String formattedValues = formatValuesAsPercentage(predictionResult);
+
+
     return Container(
       width: squareWidth / 2 ,
       margin: EdgeInsets.all(15.0),
@@ -27,9 +40,25 @@ class AddCard extends StatelessWidget {
           color: Colors.grey[700]!,
           dashPattern: const [60,10],
           child: Center(
-            child: Text('$randomText $ind ' ,textAlign: TextAlign.center , style: TextStyle(
-              fontSize: 15.0,
-            ),),
+            child: Padding(
+              padding: const EdgeInsets.all(15.0),
+              child: Column(
+                children: [
+                  Text(
+                    name,
+                    textAlign: TextAlign.center ,
+                    style: TextStyle(
+                      fontSize: 17.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(height: 15.0),
+                  Text(formattedValues ,textAlign: TextAlign.center , style: TextStyle(
+                    fontSize: 15.0,
+                  ),),
+                ],
+              ),
+            ),
 
           ),
         ),

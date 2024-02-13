@@ -5,6 +5,10 @@ import 'package:mboathoscope/controller/appDirectorySingleton.dart';
 import 'package:mboathoscope/views/widgets/result.dart';
 import 'package:path/path.dart' as p;
 
+import 'CustomDialoge.dart';
+
+
+
 class DialogUtils {
   static final DialogUtils _instance = DialogUtils.internal();
 
@@ -21,9 +25,23 @@ class DialogUtils {
         String deleteBtnText = "Delete",
         String saveBtnText = "Save",
         required String path,
+        List<dynamic>? predictionResult,
+
+
       }) {
-    ///
-    TextEditingController textEditingController = TextEditingController();
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return CustomDialog(
+          path: path,
+          predictionResult: predictionResult,
+        );
+      },
+    );
+  }
+}
+///
+/*  TextEditingController textEditingController = TextEditingController();
 
     showDialog(
         context: context,
@@ -43,23 +61,23 @@ class DialogUtils {
                       controller: textEditingController,
 
                       decoration: InputDecoration(
-                        labelText: 'Enter Recording Name',
+                          labelText: 'Enter Recording Name',
 
-                        enabledBorder: OutlineInputBorder(
-                          borderSide:
-                          const BorderSide(width: 1, color:  Colors.blueAccent,),
-                          borderRadius: BorderRadius.circular(15),
-                        ),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide:
+                                const BorderSide(width: 1, color:  Colors.blueAccent,),
+                            borderRadius: BorderRadius.circular(15),
+                          ),
 
-                        focusedBorder: OutlineInputBorder(
-                          borderSide:
-                          const BorderSide(width: 1, color: Colors.blueAccent,),
-                          borderRadius: BorderRadius.circular(15),
-                        ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide:
+                                const BorderSide(width: 1, color: Colors.blueAccent,),
+                            borderRadius: BorderRadius.circular(15),
+                          ),
 
-                        border: InputBorder.none,
-                        // hintText: 'Enter here',
-                      ),
+                          border: InputBorder.none,
+                          // hintText: 'Enter here',
+                          ),
                     ),
                     const SizedBox(
                       height: 15,
@@ -70,79 +88,100 @@ class DialogUtils {
                       children: [
                         SizedBox(
                           child: TextButton(
+
                             onPressed: () async {
-                              PlayerController tempHeartBeatPlayerController =
-                              PlayerController();
+                              try {
+                                print("Start preparing player...");
+                                final file = File(path);
+                                if (!file.existsSync()) {
+                                  print("Error: File not found at $path");
+                                  return;
+                                }
+                                PlayerController tempHeartBeatPlayerController =
+                                PlayerController();
 
-                              ///
-                              await tempHeartBeatPlayerController.preparePlayer(
-                                path: path,
-                                shouldExtractWaveform: true,
-                                volume: 1.0,
-                              );
-
-                              ///
-                              if (textEditingController.text.isNotEmpty) {
-                                final file = File(path); // Your file path
-                                String dir =
-                                p.dirname(file.path); // Get directory
-                                String newPath = p.join(
-                                    dir, textEditingController.text); // Rename
-                                file.renameSync(newPath);
-
-                                PlayerController t = PlayerController();
-
-                                await t.preparePlayer(
-                                  path: newPath,
+                                await tempHeartBeatPlayerController.preparePlayer(
+                                  path: path,
                                   shouldExtractWaveform: true,
                                   volume: 1.0,
                                 );
 
-                                ///reset path to the newpath
-                                path = newPath;
+                                print("Player prepared successfully.");
+
+                                if (textEditingController.text.isNotEmpty) {
+                                  print("Renaming file...");
+                                  final file = File(path);
+                                  String dir = p.dirname(file.path);
+                                  String newPath =
+                                  p.join(dir, textEditingController.text);
+                                  file.renameSync(newPath);
+
+                                  PlayerController t = PlayerController();
+
+                                  await t.preparePlayer(
+                                    path: newPath,
+                                    shouldExtractWaveform: true,
+                                    volume: 1.0,
+                                  );
+
+                                  path = newPath;
+                                  print("File renamed successfully to $newPath");
+                                }
+
+                                AppDirectorySingleton().addToHeartBeatAndPathMap(
+                                    path, tempHeartBeatPlayerController);
+
+                                // Close the dialog
+                                Navigator.of(context).pop();
+                                print("Dialog closed successfully.");
+
+                                // Navigate to the ResultPage
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => ResultPage(predictionResult: predictionResult),
+                                  ),
+                                );
+
+                                print("Navigation to ResultPage successful.");
+                              } catch (e, stackTrace) {
+                                print("Error: $e");
+                                // Handle the error, if any
                               }
-
-                              ///Add to local recording Map/Iterable for Global context
-                              ///usage without having to read from Local Storage
-                              AppDirectorySingleton().addToHeartBeatAndPathMap(
-                                  path, tempHeartBeatPlayerController);
-
-                              // Navigator.pop(context);
                             },
                             //color: const Color(0xFF1BC0C5),
-                            child: GestureDetector(
-                                child: const Text('Save and See Results'),
-                                onTap: () {
-                                  Navigator.pushNamed(context, '/Result');
-                                }
+                            child: Text( 'Save and See Result'
+
                             ),
 
-                          ),
+                            ),
 
-                          /* Text(
+                           *//* Text(
                               "Save",
                               // style: TextStyle(color: Colors.white),
-                            ),*/
-                        ),
+                            ),*//*
+                          ),
 
                         SizedBox(
                           child: TextButton(
-                            onPressed: () {
-                              ///
-                              final file = File(path);
-                              file.deleteSync();
-
-                              ///
-                              AppDirectorySingleton()
-                                  .deletesRecording(path);
-
-                              ///
-                              //Navigator.pop(context);
+                            onPressed: () async {
+                              try {
+                                final file = File(path);
+                                print("Deleting file at $path...");
+                                if (file.existsSync()) {
+                                  await file.delete(); // Use await to wait for the deletion to complete
+                                  print("File deleted successfully.");
+                                  AppDirectorySingleton().deletesRecording(path);
+                                } else {
+                                  print("Error: File not found at $path");
+                                }
+                              } finally {
+                                // Close the dialog, whether the deletion was successful or not
+                                Navigator.of(context, rootNavigator: true).pop();
+                              }
                             },
-                            //color: const Color(0xFF1BC0C5),
                             child: const Text(
                               "Delete",
-                              // style: TextStyle(color: Colors.white),
                             ),
                           ),
                         )
@@ -156,3 +195,4 @@ class DialogUtils {
         });
   }
 }
+*/

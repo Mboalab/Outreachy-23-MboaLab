@@ -5,23 +5,39 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="105bdd7d-2dcb-40d0-987c-fe67eeac9715" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/Outreachy-23-MboaLab.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Dart_SDK.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Mboathoscope/assets/animations/Sline.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Mboathoscope/assets/animations/doc.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Mboathoscope/assets/animations/lines.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Mboathoscope/lib/views/widgets/result.dart" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Mboathoscope/lib/views/widgets/resultChild.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Mboathoscope/android/app/src/main/java/io/flutter/plugins/MainActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Mboathoscope/android/app/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/Mboathoscope/android/app/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Mboathoscope/android/app/src/debug/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Mboathoscope/android/app/src/debug/AndroidManifest.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Mboathoscope/android/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Mboathoscope/android/app/src/main/AndroidManifest.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Mboathoscope/android/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/Mboathoscope/android/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Mboathoscope/lib/controller/PermissionsHelper.dart" beforeDir="false" afterPath="$PROJECT_DIR$/Mboathoscope/lib/controller/PermissionsHelper.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Mboathoscope/lib/controller/appDirectorySingleton.dart" beforeDir="false" afterPath="$PROJECT_DIR$/Mboathoscope/lib/controller/appDirectorySingleton.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Mboathoscope/lib/controller/helpers.dart" beforeDir="false" afterPath="$PROJECT_DIR$/Mboathoscope/lib/controller/helpers.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Mboathoscope/lib/controller/recordingsProvider.dart" beforeDir="false" afterPath="$PROJECT_DIR$/Mboathoscope/lib/controller/recordingsProvider.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Mboathoscope/lib/firebase_options.dart" beforeDir="false" afterPath="$PROJECT_DIR$/Mboathoscope/lib/firebase_options.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Mboathoscope/lib/main.dart" beforeDir="false" afterPath="$PROJECT_DIR$/Mboathoscope/lib/main.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Mboathoscope/lib/models/User.dart" beforeDir="false" afterPath="$PROJECT_DIR$/Mboathoscope/lib/models/User.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Mboathoscope/lib/models/recordingmodel.dart" beforeDir="false" afterPath="$PROJECT_DIR$/Mboathoscope/lib/models/recordingmodel.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Mboathoscope/lib/utils/localization.dart" beforeDir="false" afterPath="$PROJECT_DIR$/Mboathoscope/lib/utils/localization.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Mboathoscope/lib/views/HomePage.dart" beforeDir="false" afterPath="$PROJECT_DIR$/Mboathoscope/lib/views/HomePage.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Mboathoscope/lib/views/LoginPage.dart" beforeDir="false" afterPath="$PROJECT_DIR$/Mboathoscope/lib/views/LoginPage.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Mboathoscope/lib/views/OTPpage.dart" beforeDir="false" afterPath="$PROJECT_DIR$/Mboathoscope/lib/views/OTPpage.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Mboathoscope/lib/views/ProfilePage.dart" beforeDir="false" afterPath="$PROJECT_DIR$/Mboathoscope/lib/views/ProfilePage.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Mboathoscope/lib/views/RegisterPage.dart" beforeDir="false" afterPath="$PROJECT_DIR$/Mboathoscope/lib/views/RegisterPage.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Mboathoscope/lib/views/RolePage.dart" beforeDir="false" afterPath="$PROJECT_DIR$/Mboathoscope/lib/views/RolePage.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Mboathoscope/lib/views/StartPage.dart" beforeDir="false" afterPath="$PROJECT_DIR$/Mboathoscope/lib/views/StartPage.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Mboathoscope/lib/views/buttons/CustomButton.dart" beforeDir="false" afterPath="$PROJECT_DIR$/Mboathoscope/lib/views/buttons/CustomButton.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Mboathoscope/lib/views/buttons/SaveButton.dart" beforeDir="false" afterPath="$PROJECT_DIR$/Mboathoscope/lib/views/buttons/SaveButton.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Mboathoscope/lib/views/buttons/textButton.dart" beforeDir="false" afterPath="$PROJECT_DIR$/Mboathoscope/lib/views/buttons/textButton.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Mboathoscope/lib/views/widgets/HomePage_headerHalf.dart" beforeDir="false" afterPath="$PROJECT_DIR$/Mboathoscope/lib/views/widgets/HomePage_headerHalf.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Mboathoscope/lib/views/widgets/RecordingList.dart" beforeDir="false" afterPath="$PROJECT_DIR$/Mboathoscope/lib/views/widgets/RecordingList.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Mboathoscope/lib/views/widgets/alert_dialog_model.dart" beforeDir="false" afterPath="$PROJECT_DIR$/Mboathoscope/lib/views/widgets/alert_dialog_model.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Mboathoscope/lib/views/widgets/alert_dialog_rename_rec.dart" beforeDir="false" afterPath="$PROJECT_DIR$/Mboathoscope/lib/views/widgets/alert_dialog_rename_rec.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Mboathoscope/lib/views/widgets/result.dart" beforeDir="false" afterPath="$PROJECT_DIR$/Mboathoscope/lib/views/widgets/result.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Mboathoscope/lib/views/widgets/resultChild.dart" beforeDir="false" afterPath="$PROJECT_DIR$/Mboathoscope/lib/views/widgets/resultChild.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Mboathoscope/lib/views/widgets/waveform.dart" beforeDir="false" afterPath="$PROJECT_DIR$/Mboathoscope/lib/views/widgets/waveform.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Mboathoscope/pubspec.lock" beforeDir="false" afterPath="$PROJECT_DIR$/Mboathoscope/pubspec.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Mboathoscope/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/Mboathoscope/pubspec.yaml" afterDir="false" />
     </list>
@@ -51,25 +67,25 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "ApkExportedModule": "Outreachy-23-MboaLab",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.cidr.known.project.marker": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "cidr.known.project.marker": "true",
-    "dart.analysis.tool.window.visible": "false",
-    "io.flutter.reload.alreadyRun": "true",
-    "last_opened_file_path": "E:/digital sthethoscope/Outreachy-23-MboaLab/Mboathoscope/assets/animations",
-    "project.structure.last.edited": "Modules",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.2",
-    "settings.editor.selected.configurable": "flutter.settings",
-    "show.migrate.to.gradle.popup": "false"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;ApkExportedModule&quot;: &quot;Outreachy-23-MboaLab&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;dart.analysis.tool.window.visible&quot;: &quot;false&quot;,
+    &quot;io.flutter.reload.alreadyRun&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/user/Desktop/Outreachy-23-MboaLab/Mboathoscope/android&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;flutter.settings&quot;,
+    &quot;show.migrate.to.gradle.popup&quot;: &quot;false&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="E:\digital sthethoscope\Outreachy-23-MboaLab\Mboathoscope\assets\animations" />
@@ -170,7 +186,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="Dart">
           <url>file://$PROJECT_DIR$/Mboathoscope/lib/views/widgets/HomePage_headerHalf.dart</url>
-          <line>291</line>
+          <line>556</line>
           <option name="timeStamp" value="1" />
         </line-breakpoint>
       </breakpoints>

@@ -63,7 +63,7 @@ dependencies:
   get: ^4.6.6
   tflite_flutter: ^0.10.2
   dotted_border: ^2.1.0
-
+  flutter_sound: ^9.2.13
 
 
 dev_dependencies:
