@@ -49,7 +49,6 @@ void main() async {
                   email: ''),
             ),
         '/login': (context) => const LoginPage(),*/
-        '/Result': (context) =>  ResultPage(),
         '/homepage': (context) => HomePage(
           user: CustomUser(
               uid: '',
