@@ -37,11 +37,17 @@ public class MainActivity extends FlutterActivity {
                 );
     }
     private static final int TARGET_FRAMES = 130;
-    private static final int COEFFICIENTS_PER_FRAME = 40;
+    //private static final int COEFFICIENTS_PER_FRAME = 40;
+    private static final int COEFFICIENTS_PER_FRAME = 128;
+    int sampleRate = 22050;
+    //int bufferSize = 512;
+    int bufferSize = 1024;
+    int bufferOverlap = 256;
+    int numMelFilters = 50; // Common value for improved frequency resolution
+    int lowerFilterFreq = 0; // Lower bound of the Mel filter bank
+    int upperFilterFreq = sampleRate / 2; // Upper bound of the Mel filter bank (Nyquist frequency)
     private void extractMFCC(String filePath, MethodChannel.Result flutterResult) {
-        int sampleRate = 22050;
-        int bufferSize = 512;
-        int bufferOverlap = 256;
+
 
         File audioFile = new File(filePath);
         AudioDispatcher dispatcher;
@@ -50,13 +56,28 @@ public class MainActivity extends FlutterActivity {
             TarsosDSPAudioFormat format = new TarsosDSPAudioFormat(TarsosDSPAudioFormat.Encoding.PCM_SIGNED, sampleRate, 16, 1, 2 * 1, sampleRate, false);
             UniversalAudioInputStream audioStream = new UniversalAudioInputStream(new FileInputStream(audioFile), format);
             dispatcher = new AudioDispatcher(audioStream, bufferSize, bufferOverlap);
+//            // Create an AudioInputStream from the audio file
+//            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(audioFile);
+//
+//            // Retrieve the audio format from the AudioInputStream
+//            AudioFormat audioFormat = audioInputStream.getFormat();
+//
+//            // Retrieve the sample rate from the audio format
+//            int sampleRate = (int) audioFormat.getSampleRate();
+//            // Print the sample rate
+//            System.out.println("Sample Rate: " + sampleRate + " Hz");
+//            // Calculate upperFilterFreq after getting sample rate
+//            int upperFilterFreq = sampleRate / 2;
+//
+//            // Create an AudioDispatcher with the determined sample rate
+//            dispatcher = new AudioDispatcher(new UniversalAudioInputStream(audioInputStream, new TarsosDSPAudioFormat(TarsosDSPAudioFormat.Encoding.PCM_SIGNED, sampleRate, 16, 1, 2 * 1, sampleRate, false)), bufferSize, bufferOverlap);
         } catch (Exception e) {
             e.printStackTrace();
             flutterResult.error("ERROR", "Failed to create dispatcher: " + e.getMessage(), null);
             return;
         }
 
-        MFCC mfcc = new MFCC(bufferSize, sampleRate, COEFFICIENTS_PER_FRAME, 24, 20, 600); // Adjusted for 40 coefficients
+        MFCC mfcc = new MFCC(bufferSize, sampleRate, COEFFICIENTS_PER_FRAME, numMelFilters, lowerFilterFreq, upperFilterFreq); // Adjusted for 40 coefficients
         dispatcher.addAudioProcessor(mfcc);
 
         final ArrayList<Double> mfccResults = new ArrayList<>();
