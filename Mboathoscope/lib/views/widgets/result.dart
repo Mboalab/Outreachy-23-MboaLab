@@ -5,13 +5,13 @@ import 'package:lottie/lottie.dart';
 class ResultPage extends StatelessWidget{
   final List<dynamic>? predictionResult;
   ResultPage({Key? key, required this.predictionResult}) : super(key: key);
-    final  diseaseName = [
-      'Artifact',
-      'Extrahls',
-      'Extrastole',
-      'Murmur',
-      'Normal'
-    ];
+  final  diseaseName = [
+    'Artifact',
+    'Extrahls',
+    'Extrastole',
+    'Murmur',
+    'Normal'
+  ];
 
 
   @override
@@ -24,8 +24,8 @@ class ResultPage extends StatelessWidget{
     return Scaffold(
       appBar: AppBar(
         leading: BackButton(
-        onPressed: () =>      Navigator.of(context)
-            .pushNamedAndRemoveUntil('/homepage',  (Route<dynamic> route) => false),
+          onPressed: () =>      Navigator.of(context)
+              .pushNamedAndRemoveUntil('/homepage',  (Route<dynamic> route) => false),
         ),
       ),
       body: SafeArea(
@@ -40,7 +40,7 @@ class ResultPage extends StatelessWidget{
 
               ),
             ),
-           //SafeArea( child: Lottie.asset('assets/animations/doc.json'), ),
+            //SafeArea( child: Lottie.asset('assets/animations/doc.json'), ),
             Padding(
                 padding: const EdgeInsets.only(
                   right: 0,
