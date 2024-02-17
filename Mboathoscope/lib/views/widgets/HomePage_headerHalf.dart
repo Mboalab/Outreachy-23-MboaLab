@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'dart:math';
 import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:mboathoscope/controller/appDirectorySingleton.dart';
 import 'package:mboathoscope/controller/helpers.dart';
 import 'package:mboathoscope/views/widgets/alert_dialog_model.dart';
@@ -29,6 +30,9 @@ class headerHalf extends StatefulWidget {
 
 
 class _headerHalfState extends State<headerHalf> {
+  static const platform = MethodChannel('com.example.mfcc_flutter_project/audio');
+
+
   late final RecorderController recorderController;
   bool isRecordingCompleted = false;
 
@@ -69,6 +73,17 @@ class _headerHalfState extends State<headerHalf> {
       ..androidOutputFormat = AndroidOutputFormat.mpeg4
       ..iosEncoder = IosEncoder.kAudioFormatMPEG4AAC
       ..sampleRate = 16000;
+  }
+  Future<List<dynamic>> getMFCC(String path) async {
+    try {
+
+      final List<dynamic> mfcc = await platform.invokeMethod('getMFCC', {'filePath': path});
+     // print('MFCC: $mfcc');
+      return mfcc;
+    } on PlatformException catch (e) {
+      print("Failed to Extract MFCC: '${e.message}'.");
+      return [];
+    }
   }
   Future<void> _loadModel() async {
     try {
@@ -238,18 +253,24 @@ class _headerHalfState extends State<headerHalf> {
         ///Stops recording and returns path,
         ///saves file automatically here
         recorderController.stop(false).then((value) async {
-           outputPath = await executeFFmpegCommand(path!);
+          outputPath = await executeFFmpegCommand(path!);
 
-          DialogUtils.showCustomDialog(
+          // Get MFCC results and await the result directly
+          final mfccResults = await getMFCC(path);
+          print("MFCC Results - 1: $mfccResults");
+          List<double> mfccDoubleResults = mfccResults.cast<double>();
+          List<List<List<List<double>>>> reshapedMfccResults = reshapeMfccResults(mfccDoubleResults);
+          print("MFCC Results - 2: $reshapedMfccResults");
+           DialogUtils.showCustomDialog(
               context, title: 'title', path: outputPath);
-          print("Before calling convertAudioToArray");
+      /*    print("Before calling convertAudioToArray");
 
-          outputFilePath2 = await convertAudioToArray(outputPath);
+          outputFilePath2 = await convertAudioToArray(path);
           print("After calling convertAudioToArray");
-          print("Audio3DArray22222222222222222: $outputFilePath2");
+          print("Audio3DArray22222222222222222: $outputFilePath2");*/
 
           // Predict heart condition after converting our decode audio array to 3D
-          await _predictHeartCondition(outputFilePath2.cast<List<List<List<double>>>>());
+          await _predictHeartCondition(reshapedMfccResults.cast<List<List<List<double>>>>());
 
         });
 
@@ -288,33 +309,67 @@ class _headerHalfState extends State<headerHalf> {
   }
 
 
-  /*Future<List<double>> convertAudioToArray(String audioFilePath) async {
-    try {
-      await flutterSoundPlayer.openPlayer();
-    // Replace with your audio file path
+    // Initialize the 4D array with the specified dimensions: [1, height, width, channels]
 
-      // Use dart:io to read the audio file as bytes
-      File audioFile = File(audioFilePath);
-      List<int> audioBytes = await audioFile.readAsBytes();
+    List<List<List<List<double>>>> reshapeMfccResults(List<double> mfccResults) {
+      int height = 128;
+      int width = 130;
+      int channels = 1;
+      if (mfccResults.length != height * width) {
+        throw Exception("MFCC results list size does not match the expected dimensions (${height * width}). Actual size is ${mfccResults.length}.");
+      }
 
-      // Convert the list of bytes to Uint8List
-      Uint8List audioData = Uint8List.fromList(audioBytes);
+      // Initialize the 4D array with zeros
+      List<List<List<List<double>>>> reshaped = List.generate(1, (_) =>
+          List.generate(height, (_) =>
+              List.generate(width, (_) =>
+                  List.generate(channels, (_) => 0.0)
+              )
+          )
+      );
 
-      // Convert Uint8List to List<double> with values normalized to the range [-1.0, 1.0]
-      List<double> floatArray = audioData.map((byte) => (byte - 128) / 128.0).toList();
+      // Populate the 4D array with values from mfccResults
+      for (int i = 0; i < height; i++) {
+        for (int j = 0; j < width; j++) {
+          int index = i * width + j;
+          if (index < mfccResults.length) { // Safety check
+            reshaped[0][i][j][0] = mfccResults[index];
+          } else {
+            print("Warning: Attempt to access beyond list bounds at index $index. List size is ${mfccResults.length}.");
+          }
+        }
+      }
 
-      // Print the List<double> (for demonstration purposes)
-      print("FloatArray: $floatArray");
-
-      // Return the List<double>
-      return floatArray;
-    } catch (e) {
-      print("Error: $e");
-      return null!;
-    } finally {
-      await flutterSoundPlayer.closePlayer();
+      return reshaped;
     }
-  }*/
+/*
+  List<List<List<List<double>>>> reshapeMfccResults(List<double> mfccResults) {
+    // Initialize the 4D array with zeros for padding
+    int height = 128;
+    int width = 130;
+    int channels = 1;
+    List<List<List<List<double>>>> reshaped = List.generate(1, (_) =>
+        List.generate(height, (_) =>
+            List.generate(width, (_) =>
+                List.generate(channels, (_) => 0.0) // Use zeros for padding
+            )
+        )
+    );
+
+    // Calculate the number of elements to iterate over in the flat list
+    int numElements = min(mfccResults.length, height * width);
+
+    // Populate the 4D array with values from mfccResults
+    for (int i = 0; i < numElements; i++) {
+      int h = i ~/ width;
+      int w = i % width;
+      reshaped[0][h][w][0] = mfccResults[i];
+    }
+
+    return reshaped;
+  }
+*/
+
 
   Future<List<List<List<List<double>>>>> convertAudioToArray(String outputPath) async {
     try {
@@ -345,11 +400,11 @@ class _headerHalfState extends State<headerHalf> {
       List<List<List<List<double>>>> audio4DArray = List.generate(
         channels,
             (channelIndex) => List.generate(
-            height,
+          height,
               (depthIndex) => List.generate(
-                width,
+            width,
                 (heightIndex) => List.generate(
-                  depth,
+              depth,
                   (widthIndex) {
                 int sampleIndex = heightIndex * width + widthIndex;
                 int byteIndex = (sampleIndex * channels + channelIndex) * 1;
@@ -594,4 +649,3 @@ class _headerHalfState extends State<headerHalf> {
 
   }
 }
-

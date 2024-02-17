@@ -12,8 +12,8 @@ class AddCard extends StatelessWidget {
   AddCard( {Key? key, required this.predictionResult,required this.name}) : super(key: key);
   String formatValuesAsPercentage(double value) {
 
-      double percentage = (value * 100);
-      return '${percentage.toStringAsFixed(2)}%';
+    double percentage = (value * 100);
+    return '${percentage.toStringAsFixed(2)}%';
 
   }
   /*String formatFirstValueAsPercentage() {
@@ -27,8 +27,8 @@ class AddCard extends StatelessWidget {
   Widget build(BuildContext context) {
 
 
-     double squareWidth = MediaQuery.of(context).size.width;
-     String formattedValues = formatValuesAsPercentage(predictionResult);
+    double squareWidth = MediaQuery.of(context).size.width;
+    String formattedValues = formatValuesAsPercentage(predictionResult);
 
 
     return Container(
@@ -46,7 +46,7 @@ class AddCard extends StatelessWidget {
                 children: [
                   Text(
                     name,
-                textAlign: TextAlign.center ,
+                    textAlign: TextAlign.center ,
                     style: TextStyle(
                       fontSize: 17.0,
                       fontWeight: FontWeight.bold,
