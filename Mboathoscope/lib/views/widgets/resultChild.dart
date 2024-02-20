@@ -1,68 +1,41 @@
 import 'package:flutter/material.dart';
 import 'package:dotted_border/dotted_border.dart';
 
-
-
 class AddCard extends StatelessWidget {
-
-
-  final dynamic  predictionResult;
   final String name;
+  final bool isNormal;
+  final bool highlighted;
 
-  AddCard( {Key? key, required this.predictionResult,required this.name}) : super(key: key);
-  String formatValuesAsPercentage(double value) {
-
-      double percentage = (value * 100);
-      return '${percentage.toStringAsFixed(2)}%';
-
-  }
-  /*String formatFirstValueAsPercentage() {
-    double firstValue = predictionResult[0];
-    double percentage = firstValue * 100;
-    return '${percentage.toStringAsFixed(2)}%';
-  }*/
-
+  AddCard({Key? key, required this.name, required this.isNormal, required this.highlighted}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-
-
-     double squareWidth = MediaQuery.of(context).size.width;
-     String formattedValues = formatValuesAsPercentage(predictionResult);
-
-
+    Color borderColor = highlighted ? (isNormal ? Colors.blueAccent : Colors.red) : Colors.black;
+    //Color textColor = highlighted ? Colors.black : Colors.black;
+    Color textColor = highlighted ? (isNormal ? Colors.blueAccent : Colors.red) : Colors.black;
     return Container(
-      width: squareWidth / 2 ,
+      width: MediaQuery.of(context).size.width / 2,
       margin: EdgeInsets.all(15.0),
       child: InkWell(
         onTap: () {},
         child: DottedBorder(
-          color: Colors.grey[700]!,
-          dashPattern: const [60,10],
+          color: borderColor,
+          dashPattern: const [60, 10],
           child: Center(
             child: Padding(
               padding: const EdgeInsets.all(15.0),
-              child: Column(
-                children: [
-                  Text(
-                    name,
-                textAlign: TextAlign.center ,
-                    style: TextStyle(
-                      fontSize: 17.0,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  SizedBox(height: 15.0),
-                  Text(formattedValues ,textAlign: TextAlign.center , style: TextStyle(
-                    fontSize: 15.0,
-                  ),),
-                ],
+              child: Text(
+                name,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 17.0,
+                  fontWeight: FontWeight.bold,
+                  color: textColor,
+                ),
               ),
             ),
-
           ),
         ),
-
       ),
     );
   }

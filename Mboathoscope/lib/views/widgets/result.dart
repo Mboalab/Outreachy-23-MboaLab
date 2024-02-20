@@ -1,31 +1,42 @@
 import 'package:flutter/material.dart';
-import 'package:mboathoscope/views/widgets/resultChild.dart';
 import 'package:lottie/lottie.dart';
+import 'package:mboathoscope/views/widgets/resultChild.dart';
 
-class ResultPage extends StatelessWidget{
+class ResultPage extends StatelessWidget {
   final List<dynamic>? predictionResult;
   ResultPage({Key? key, required this.predictionResult}) : super(key: key);
-    final  diseaseName = [
-      'Artifact',
-      'Extrahls',
-      'Extrastole',
-      'Murmur',
-      'Normal'
-    ];
 
+  // Method to determine if the result is "Normal" or "Abnormal"
+  String categorizeResult(double normalScore, List<dynamic> otherScores) {
+    for (var score in otherScores) {
+      if (score > normalScore) {
+        return 'Abnormal';
+      }
+    }
+    return 'Normal';
+  }
 
   @override
   Widget build(BuildContext context) {
-    List? flattenedData = predictionResult?.expand((element) => element).toList();
-    print("Prediction from result screen: ${predictionResult.toString()}");
+    if (predictionResult == null || predictionResult!.isEmpty || predictionResult![0].isEmpty) {
+      return Scaffold(
+        body: Center(
+          child: Text('No prediction result available.'),
+        ),
+      );
+    }
 
-    var w = MediaQuery.of(context).size.width;
-    var h = MediaQuery.of(context).size.height;
+    // Assuming the last element is a list containing scores
+    List<dynamic> scores = predictionResult![0];
+    double normalScore = scores.last.toDouble();
+    List<dynamic> otherScores = scores.sublist(0, scores.length - 1);
+    String result = categorizeResult(normalScore, otherScores);
+
     return Scaffold(
       appBar: AppBar(
         leading: BackButton(
-        onPressed: () =>      Navigator.of(context)
-            .pushNamedAndRemoveUntil('/homepage',  (Route<dynamic> route) => false),
+          onPressed: () => Navigator.of(context).pushNamedAndRemoveUntil(
+              '/homepage', (Route<dynamic> route) => false),
         ),
       ),
       body: SafeArea(
@@ -33,47 +44,73 @@ class ResultPage extends StatelessWidget{
           children: [
             Padding(
               padding: EdgeInsets.all(10.0),
-              child: Center( child: Text('Result',style: TextStyle(
-                fontSize: 30.0,
-                fontWeight: FontWeight.bold,
-              ),),
-
+              child: Center(
+                child: Text(
+                  'Result',
+                  style: TextStyle(
+                    fontSize: 30.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
             ),
-           //SafeArea( child: Lottie.asset('assets/animations/doc.json'), ),
             Padding(
-                padding: const EdgeInsets.only(
-                  right: 0,
-                  left: 70,
-                  top: 0,
-                  bottom: 0,
-                ),
-                child : Row (
-                  children:   [Container(
-                    height: h * .2,
-                    width: w * .7,
+              padding: const EdgeInsets.only(
+                right: 0,
+                left: 70,
+                top: 0,
+                bottom: 0,
+              ),
+              child: Row(
+                children: [
+                  Container(
+                    height: MediaQuery.of(context).size.height * .2,
+                    width: MediaQuery.of(context).size.width * .7,
                     child: Lottie.asset('assets/animations/doc.json'),
                   ),
-                  ],
-                )
-            ),
-            GridView.builder(
-
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 8.0,
-                mainAxisSpacing: 8.0, childAspectRatio: (1 / .7),
+                ],
               ),
-
-              shrinkWrap: true, // You won't see infinite size error
-              physics: ScrollPhysics(),
-              itemCount: flattenedData?.length,
-              itemBuilder: (BuildContext ctx, index) =>
-                  AddCard(  name: diseaseName[index],predictionResult: flattenedData?[index]),
             ),
+            SizedBox(height: 20.0),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Expanded(
+                  child: AddCard(
+                    name: 'Normal',
+                    isNormal: true,
+                    highlighted: result == 'Normal',
+                  ),
+                ),
+                Expanded(
+                  child: AddCard(
+                    name: 'Abnormal',
+                    isNormal: false,
+                    highlighted: result == 'Abnormal',
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 20.0),
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                child: Text(
+                  result == 'Normal' ? 'Your heart sounds are within the normal range.' : 'Your heart sounds may indicate a potential issue. Please consult a healthcare professional.',
+                  style: TextStyle(
+                    fontSize: 18.0,
+                    color: result == 'Normal' ? Colors.blueAccent : Colors.red,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ),
+
           ],
         ),
       ),
     );
+
+
   }
 }

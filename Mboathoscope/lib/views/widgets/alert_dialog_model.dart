@@ -5,7 +5,9 @@ import 'package:mboathoscope/controller/appDirectorySingleton.dart';
 import 'package:mboathoscope/views/widgets/result.dart';
 import 'package:path/path.dart' as p;
 
-import 'CustomDialogue.dart';
+import 'CustomDialoge.dart';
+
+
 
 class DialogUtils {
   static final DialogUtils _instance = DialogUtils.internal();
@@ -18,12 +20,12 @@ class DialogUtils {
       AppDirectorySingleton.heartBeatParentPath;
 
   static void showCustomDialog(
-    BuildContext context, {
-    required String title,
-    String deleteBtnText = "Delete",
-    String saveBtnText = "Save",
-    required String path,
-    List<dynamic>? predictionResult,
+      BuildContext context, {
+        required String title,
+        String deleteBtnText = "Delete",
+        String saveBtnText = "Save",
+        required String path,
+        List<dynamic>? predictionResult,
 
 
       }) {
@@ -38,8 +40,8 @@ class DialogUtils {
     );
   }
 }
-    ///
-  /*  TextEditingController textEditingController = TextEditingController();
+///
+/*  TextEditingController textEditingController = TextEditingController();
 
     showDialog(
         context: context,

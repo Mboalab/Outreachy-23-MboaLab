@@ -74,6 +74,7 @@ flutter {
 dependencies {
 //    implementation 'com.github.JaeBinCHA7:RTNR:Tag'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation files('lib/TarsosDSP-Android-latest.jar')
 
     // Import the Firebase BoM
     implementation(platform("com.google.firebase:firebase-bom:32.2.2"))
