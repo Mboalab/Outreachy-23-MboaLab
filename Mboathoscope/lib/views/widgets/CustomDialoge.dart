@@ -116,6 +116,7 @@ class _CustomDialogState extends State<CustomDialog> {
                             MaterialPageRoute(
                               builder: (context) => ResultPage(
                                 predictionResult: widget.predictionResult,
+                                audioPath: path, // Pass the audio recording path
                               ),
                             ),
                           );
