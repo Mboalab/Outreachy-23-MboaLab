@@ -1,5 +1,4 @@
 package io.flutter.plugins;
-
 import java.io.File;
 import java.util.ArrayList;
 import be.tarsos.dsp.AudioDispatcher;
@@ -11,7 +10,6 @@ import be.tarsos.dsp.mfcc.MFCC;
 import io.flutter.embedding.android.FlutterActivity;
 import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.plugin.common.MethodChannel;
-
 import be.tarsos.dsp.io.TarsosDSPAudioFormat;
 import be.tarsos.dsp.io.UniversalAudioInputStream;
 import be.tarsos.dsp.mfcc.MFCC;
