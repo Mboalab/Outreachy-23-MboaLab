@@ -10,12 +10,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="105bdd7d-2dcb-40d0-987c-fe67eeac9715" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Mboathoscope/lib/views/widgets/CustomDialoge.dart" beforeDir="false" afterPath="$PROJECT_DIR$/Mboathoscope/lib/views/widgets/CustomDialoge.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Mboathoscope/lib/views/widgets/result.dart" beforeDir="false" afterPath="$PROJECT_DIR$/Mboathoscope/lib/views/widgets/result.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Mboathoscope/pubspec.lock" beforeDir="false" afterPath="$PROJECT_DIR$/Mboathoscope/pubspec.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Mboathoscope/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/Mboathoscope/pubspec.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Mboathoscope/android/app/src/main/java/io/flutter/plugins/MainActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/Mboathoscope/android/app/src/main/java/io/flutter/plugins/MainActivity.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
